@@ -25,7 +25,7 @@
       "constant.numeric"
     ],
     "settings": {
-      "foreground": "$purple"
+      "foreground": "$pair.amber"
     }
   },
   {
@@ -65,7 +65,7 @@
       "support.class"
     ],
     "settings": {
-      "foreground": "$lavender"
+      "foreground": "$neon.magenta"
     }
   },
   {
@@ -74,7 +74,7 @@
       "entity.name.type"
     ],
     "settings": {
-      "foreground": "$lavender"
+      "foreground": "$neon.magenta"
     }
   },
   {
@@ -83,7 +83,7 @@
       "entity.name.class"
     ],
     "settings": {
-      "foreground": "$lavender"
+      "foreground": "$neon.magenta"
     }
   },
   {
@@ -92,7 +92,7 @@
       "entity.name.namespace"
     ],
     "settings": {
-      "foreground": "$lavender"
+      "foreground": "$neon.magenta"
     }
   },
   {
@@ -158,7 +158,7 @@
       "punctuation.parenthesis.end"
     ],
     "settings": {
-      "foreground": "$lavender"
+      "foreground": "$neon.blue"
     }
   },
   {
@@ -195,7 +195,7 @@
       "punctuation.section.block.end"
     ],
     "settings": {
-      "foreground": "$purple"
+      "foreground": "$pair.teal"
     }
   },
   {
@@ -214,7 +214,7 @@
       "punctuation.definition.bracket"
     ],
     "settings": {
-      "foreground": "$neon.magenta"
+      "foreground": "$neon.mint"
     }
   },
   {
@@ -250,7 +250,7 @@
       "support.variable.magic.python"
     ],
     "settings": {
-      "foreground": "$lavender"
+      "foreground": "$pair.magenta"
     }
   },
   {
@@ -259,7 +259,7 @@
       "variable.parameter.function.language.special.self.python"
     ],
     "settings": {
-      "foreground": "$purple"
+      "foreground": "$neon.mint"
     }
   },
   {
@@ -310,7 +310,7 @@
       "variable.other.jinja"
     ],
     "settings": {
-      "foreground": "$purple"
+      "foreground": "$neon.magenta"
     }
   },
   {
@@ -387,7 +387,7 @@
       "markup.inline.raw"
     ],
     "settings": {
-      "foreground": "$purple"
+      "foreground": "$neon.teal"
     }
   },
   {
@@ -415,7 +415,7 @@
       "variable.other.alias.yaml"
     ],
     "settings": {
-      "foreground": "$lavender"
+      "foreground": "$neon.red"
     }
   },
   {

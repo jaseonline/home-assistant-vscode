@@ -1,0 +1,1218 @@
+my_neumorphic:
+  # =============================================================================
+  # FULL NEUMORPHIC THEME FOR HOME ASSISTANT
+  # =============================================================================
+  # A premium neumorphic (soft UI) theme with light and dark modes
+  # Version: 1.0.0
+  # Author: Lovable AI
+  # License: MIT
+  #
+  # Features:
+  # - Complete neumorphic design system with convex/concave shadows
+  # - Premium typography (Segoe UI / system font stack)
+  # - Full coverage of HA theme variables
+  # - Optimized for readability and accessibility
+  # - Works beautifully with Mushroom cards
+  # =============================================================================
+
+  #################################
+  # TYPOGRAPHY SETTINGS
+  #################################
+  font-stack: "Figtree, Noto Color Emoji, -apple-system, BlinkMacSystemFont, Apple Color Emoji, sans-serif"
+  mdc-typography-button-font-family: "var(--font-stack)"
+  mdc-typography-font-family: "var(--font-stack)"
+
+  ha-font-family-body: "var(--font-stack)"
+  ha-font-family-heading: "var(--font-stack)"
+  ha-font-family-code: "var(--font-stack)"
+  ha-font-family-longform: "var(--font-stack)"
+
+  ha-font-size-scale: "1"
+  ha-font-size-xs: "calc(10px * var(--ha-font-size-scale))"
+  ha-font-size-s: "calc(12px * var(--ha-font-size-scale))"
+  ha-font-size-m: "calc(14px * var(--ha-font-size-scale))"
+  ha-font-size-l: "calc(16px * var(--ha-font-size-scale))"
+  ha-font-size-xl: "calc(20px * var(--ha-font-size-scale))"
+  ha-font-size-2xl: "calc(24px * var(--ha-font-size-scale))"
+  ha-font-size-3xl: "calc(28px * var(--ha-font-size-scale))"
+  ha-font-size-4xl: "calc(32px * var(--ha-font-size-scale))"
+  ha-font-size-5xl: "calc(40px * var(--ha-font-size-scale))"
+
+  h1-font-size: "2rem"
+  h2-font-size: "1.5rem"
+  h3-font-size: "1.17rem"
+  h4-font-size: "1rem"
+  h5-font-size: "0.83rem"
+  h6-font-size: "0.67rem"
+
+  h1-font-weight: "100"
+  h2-font-weight: "100"
+  h3-font-weight: "100"
+  h4-font-weight: "500"
+  h5-font-weight: "400"
+  h6-font-weight: "400"
+
+  # Body at 14px = 10.5pt = 1rem
+  body-font-size: "1rem"
+  body-font-weight: "normal"
+  body-line-height: "normal"
+  card-title-font-size: "1.5rem"
+  card-title-font-weight: "500"
+  card-title-line-height: "normal"
+  title-font-size: "2rem"
+  subtitle-font-size: "1rem"
+  small-font-size: "0.9rem"
+
+  # Northern Line: black  
+  mush-rgb-northern: "0, 0, 0"
+  # Bakerloo Line: brown
+  mush-rgb-bakerloo: "150, 100, 60"
+  
+
+  body-font: "var(--body-font-weight) var(--body-font-size) var(--font-stack)"
+  card-title-font: "var(--card-title-font-weight) var(--card-title-font-size) var(--font-stack)"
+  h1-font: "var(--h1-font-weight) var(--h1-font-size) var(--font-stack)"
+  h2-font: "var(--h2-font-weight) var(--h2-font-size) var(--font-stack)"
+  h3-font: "var(--h3-font-weight) var(--h3-font-size) var(--font-stack)"
+  h4-font: "var(--h4-font-weight) var(--h4-font-size) var(--font-stack)"
+  h5-font: "var(--h5-font-weight) var(--h5-font-size) var(--font-stack)"
+  h6-font: "var(--h6-font-weight) var(--h6-font-size) var(--font-stack)"
+
+  #################################
+  # COLOR PALETTE REFERENCE
+  # https://www.learnui.design/tools/data-color-picker.html
+  #################################
+  # 1f2937
+  # 1d365b
+  # 244280
+  # 3c4aa4
+  # 634ec4
+  # 924cdf
+  # c73ef3
+  # ff00ff
+
+  #################################
+  # DIVERGENT COLOR SCALE
+  # https://www.learnui.design/tools/data-color-picker.html
+  #################################
+  # 1f2937
+  # 81868e
+  # f1f1f1
+  # ff9ef9
+  # ff00ff
+
+  #################################
+  # CODEMIRROR COLORS
+  #################################
+  code-editor-gutter-color: "#061426"
+  code-editor-background-color: "#00254b"
+  markdown-code-background-color: "#00254b"
+  codemirror-meta: "#ffcb6b"
+  codemirror-property: "#ff8000"
+  codemirror-string: "#3AD900"
+  codemirror-atom: "#ffffff00"
+  codemirror-keyword: "#FFEE80"
+  codemirror-number: "#10a5dfff"
+  codemirror-comment: "#036b0aff"
+
+  #################################
+  # MUSHROOM COLORS
+  #################################
+  mush-rgb-red: "244, 67, 54"
+  mush-rgb-pink: "233, 30, 99"
+  mush-rgb-purple: "156, 39, 176"
+  mush-rgb-deep-purple: "103, 58, 183"
+  mush-rgb-indigo: "63, 81, 181"
+  mush-rgb-blue: "33, 150, 243"
+  mush-rgb-light-blue: "3, 169, 244"
+  mush-rgb-cyan: "0, 188, 212"
+  mush-rgb-teal: "0, 150, 136"
+  mush-rgb-green: "76, 175, 80"
+  mush-rgb-light-green: "139, 195, 74"
+  mush-rgb-lime: "205, 220, 57"
+  mush-rgb-yellow: "255, 235, 59"
+  mush-rgb-amber: "255, 193, 7"
+  mush-rgb-orange: "255, 152, 0"
+  mush-rgb-deep-orange: "255, 87, 34"
+  mush-rgb-brown: "121, 85, 72"
+  mush-rgb-grey: "158, 158, 158"
+  mush-rgb-blue-grey: "96, 125, 139"
+  mush-rgb-black: "0, 0, 0"
+  mush-rgb-white: "255, 255, 255"
+  mush-rgb-disabled: "200, 200, 200"
+
+  mdc-theme-primary: "hsl(300, 100%, 50%)"
+  colour-neon-green: "#39FF14"
+  colour-neon-yellow: "#CCFF00"
+  colour-neon-orange: "#FF5C00"
+  colour-neon-red: "#FF3131"
+  colour-neon-pink: "#FF1493"
+  colour-neon-blue: "#00E5FF"
+
+  # --- Sidebar ---
+  md-list-item-leading-icon-size: "1.8rem"
+  # sidebar_selected_icon_color: "var(--state-icon-active-color)"
+  # sidebar_selected_text_color: "var(--state-icon-active-color)"
+  #app-safe-area-inset-left: "-56px"
+
+  # --- Layout Spacing ---
+  masonry-view-card-margin: "4px 8px 4px 8px"
+  grid-card-gap: "16px"
+  stack-card-margin: "8px"
+  horizontal-stack-card-margin: "0 8px"
+  vertical-stack-card-margin: "8px 0"
+  control-slider-border-radius: "1.2rem"
+  control-slider-tooltip-font-size: "1.5rem"
+
+  # --- Dialog Styling ---
+  dialog-backdrop-filter: "blur(8px)"
+  dialog-scrim-color: "hsla(0, 0%, 0%, 0.6)"
+  dialog-z-index: "8"
+  dialog-surface-top: "0"
+  dialog-surface-margin-top: "0px"
+  dialog-surface-backdrop-filter: "blur(8px)"
+  ha-dialog-scrim-backdrop-filter: "blur(4px)"
+  ha-dialog-max-width: "600px"
+  ha-dialog-min-height: "auto"
+  ha-dialog-border-radius: "25px"
+  ha-card-border-radius: "1.2rem"
+  ha-card-border: "0"
+  ha-card-border-style: "solid"
+  ha-card-border-width: "0"
+  ha-button-height: "4rem"
+  ha-button-border-radius: "1.2rem"
+  ha-icon-button-size: "35px"
+  wa-form-control-padding-inline: ".6rem 1.5rem"
+
+
+  #################################
+  # Navbar Card
+  # https://joseluis9595.github.io/lovelace-navbar-card/docs/introduction
+  #################################
+  # navbar-primary-color: "var(--primary-color)"
+  # navbar-border-radius: "1.2rem"
+  # navbar-background-color: "var(--grey-1-color)"
+  # navbar-route-icon-size: "2rem"
+  # navbar-route-image-size: "2rem"
+  navbar-box-shadow-desktop: "var(--shadow-outset)"
+  navbar-box-shadow: "var(--shadow-outset)"
+  navbar-box-shadow-mobile-floating: "var(--shadow-outset)"
+  navbar-primary-color: "var(--primary-color)"
+  navbar-background-color: "var(--ha-card-background)"
+  navbar-route-icon-size: "2rem"
+  navbar-route-image-size: "2rem"
+  navbar-border-radius: "var(--ha-card-border-radius, 12px)"
+
+  state-active-color: "var(--primary-color)"
+
+  control-slider-thickness: "0.5rem"
+  control-slider-background-opacity: "1"
+  control-slider-background: "transparent"
+
+
+  #################################
+  # CARD_MOD: hui-root
+  #################################
+
+  # This can be commented out as GLOBAL-MOD is used in this theme and it is a requirement to
+  # call the card-mod theme via the root selector in GLOBAL-MOD. If you are not using GLOBAL-MOD,
+  # you can uncomment the line below to apply the theme to all card-mod elements.
+  card-mod-theme: my_neumorphic
+
+  card-mod-root-yaml: |
+    .: |
+      .toolbar > ha-tab-group {
+        pointer-events: none;
+        opacity: 0;
+      }
+      div.tab-bar {
+        justify-content: center;
+      }
+      /* INPUTS */
+      input, ha-textfield, ha-select {
+        background: var(--ha-card-background) !important;
+        /* variable above is valid and defined by another application */
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border-radius: var(--ha-card-border-radius) !important;
+        border: 0 !important;
+        box-shadow: var(--shadow-inset) !important;
+      }
+
+
+  #################################
+  # CARD_MOD: ha-card
+  #################################
+  card-mod-card-yaml: |
+    .: |
+      ha-card {
+        transition: box-shadow 200ms ease, transform 180ms ease;
+      }
+      .card-header,
+      .header,
+      .section-header {
+        text-shadow: 0 1px 0 hsla(0,0%,25%,0.7), 0 -1px 0 hsl(0,0%,5%);
+        letter-spacing: 0.04em;
+      }
+
+  #################################
+  # CARD_MOD: hui-view
+  #################################
+  card-mod-view: |
+    #view {
+      padding-top:
+        {%- if browser == 'HA-FireTablet' or browser == 'iPhone 15 Pro Max' %}
+          1px;
+        {%- else -%}
+          0px;
+        {%- endif %}
+    }
+    #view.has-tab-bar {
+      /* Drop the page in edit-mode */
+      padding-top: 113px;
+    }
+
+  #################################
+  # CARD_MOD: ha-row
+  #################################
+  card-mod-row-yaml: |
+    "* $": |
+      ha-config-section {
+        --card-background-color: transparent ; /* used by     --md-sys-color-surface */
+      }
+    hui-generic-entity-row:
+      $: |
+        :host(:not([slot=secondary])) {
+          box-shadow: none !important;
+        }
+        .secondary {
+          box-shadow: none !important;
+        }                  
+    ha-select $: |
+      :host(:not([disabled])) .mdc-select:not(.mdc-select--outlined):not(.mdc-select--disabled) .mdc-select__anchor,
+        div.mdc-select.mdc-select--filled {
+          --mdc-select-fill-color: var(--grey-1-color);
+          box-shadow: var(--shadow-outset);
+          border-radius: var(--ha-card-border-radius);
+        }
+  #################################
+  # CARD_MOD: ha-sidebar
+  #################################
+  card-mod-sidebar-yaml: |
+    "ha-list-item-button$": |
+      :host md-item {
+        overflow: visible;
+      }
+      :host ha-ripple {
+        --md-ripple-hover-color: transparent;
+        --md-ripple-pressed-color: transparent;
+      }
+    "ha-tooltip$":
+      "wa-popup$": |
+        div>slot>div.body {
+          background-color: var(--grey-1-color);
+          white-space: nowrap;
+          box-shadow: var(--shadow-outset);
+          text-align: center;
+          border-radius: var(--ha-card-border-radius);
+          padding: 0.25rem 0.5rem;
+          position: absolute;
+          z-index: 1;
+          margin-bottom: 1rem;
+        }
+    .: |
+      :host ha-list-item-button > :is(ha-svg-icon, ha-icon)[slot="start"]:hover,
+      :host ha-list-item-button.selected > :is(ha-svg-icon, ha-icon)[slot="start"] {
+        box-shadow: var(--shadow-button-inset);
+        --icon-primary-color: var(--secondary-accent-color);
+        color: var(--secondary-accent-color);
+        text-shadow: 0 0 15px var(--secondary-accent-color);
+      }
+      :host ha-list-item-button.selected::before {
+        background-color: transparent;
+      }
+      :host ha-list-item-button > :is(ha-svg-icon, ha-icon)[slot="start"] {
+        border-radius: 50%;
+        padding: 8px;
+        box-shadow: var(--shadow-button-outset);
+        --sidebar-icon-color: var(--primary-text-color);
+      }
+      :host([expanded]) ha-list-item-button .item-text {
+        background: var(--black-color);
+        background-clip: text;
+        color: var(--primary-text-color);
+        font-size: var(--ha-font-size-l);
+        text-shadow: rgba(255, 255, 255, 0.25) -1px -2px 1px;
+      }
+      :host ha-list-item-button {
+        --mdc-icon-size: 22px;
+        --ha-space-6: 22px;
+        --ha-space-3: 6px;
+      }
+      ha-list-nav>ha-list-item-button.user>ha-user-badge {
+        box-shadow: var(--shadow-button-inset);
+        border-radius: 50%;
+      }
+      ha-list-nav.ha-scrollbar.before-spacer  {
+        scrollbar-width: none !important;
+      }
+      div.menu>div.title {
+        background: var(--black-color);
+        background-clip: text;
+        color: var(--primary-text-color);
+        text-shadow: rgba(255, 255, 255, 0.25) -1px -2px 1px;
+      }
+  #################################
+  # CARD_MOD: ha-dialog
+  #################################
+  card-mod-dialog-yaml: |
+    $: |
+      :host(.type-add-automation-element-dialog),
+      :host(.type-dialog-data-entry-flow),
+      :host(.type-dialog-edit-card),
+      :host(.type-dialog-restart),
+      :host(.type-dialog-box) {
+        --dialog-surface-margin-top: 0;
+      }
+      :host(.type-add-automation-element-dialog) wa-dialog::part(dialog),
+      :host(.type-dialog-data-entry-flow) wa-dialog::part(dialog),
+      :host(.type-dialog-edit-card) wa-dialog::part(dialog),
+      :host(.type-dialog-restart) wa-dialog::part(dialog),
+      :host(.type-dialog-box) wa-dialog::part(dialog) {
+        --dialog-surface-position: relative;
+        transition: var(--ha-dialog-transition);
+      }
+      :host(.type-dialog-data-entry-flow) wa-dialog::part(dialog)::backdrop,
+      :host(.type-dialog-edit-card) wa-dialog::part(dialog)::backdrop,
+      :host(.type-dialog-restart) wa-dialog::part(dialog)::backdrop,
+      :host(.type-dialog-box) wa-dialog::part(dialog)::backdrop {
+        backdrop-filter: var(--ha-dialog-scrim-backdrop-filter);
+      }
+
+      div.mdc-dialog div.mdc-dialog__surface {
+        /*  Includes pop-ups that are not included with more-info such as Devices and Services install  */
+        --dialog-surface-position: relative;
+        border: 0;
+        transition: var(--ha-dialog-transition);
+      }
+      .header-title {
+        text-transform: uppercase;
+      }
+      div.mdc-dialog div.mdc-dialog__scrim {
+        backdrop-filter: var(--ha-dialog-scrim-backdrop-filter);
+        background-color: var(--dialog-scrim-color);
+      }
+      #contentSlot {
+        --mdc-select-fill-color: rgba(255, 255, 255, 0.1);
+        --mdc-theme-surface: rgba(30, 30, 30, 0.1);
+      }
+      
+    ha-button:
+      $: |
+        :host button.button,
+        :host .button,
+        button.button,
+        div.button {
+          box-shadow: var(--shadow-button-outset);
+        }
+        :host([appearance~=filled]) button.button,
+        :host([appearance~="accent"]) button.button,
+        :host([appearance="accent"]) button.button {
+          /*  Buttons on type-browser-mod-popup             */
+          box-shadow: var(--shadow-button-outset);
+          background-color: var(--grey-1-color);
+          border: none;
+        }
+        :host([appearance~="accent"]) button.button:not(.disabled):not(.loading):hover,
+        :host([appearance="accent"]) button.button:not(.disabled):not(.loading):hover {
+          box-shadow: var(--shadow-button-inset);
+          background-color: var(--grey-1-color);
+          color: var(--secondary-accent-color);
+          text-shadow: 0 0 15px var(--secondary-accent-color);        
+        }
+        :host([appearance~="accent"]) button.button:not(.disabled):not(.loading):active,
+        :host([appearance="accent"]) button.button:not(.disabled):not(.loading):active {
+          box-shadow: var(--shadow-button-inset);
+          background-color: var(--grey-1-color);
+          color: var(--secondary-accent-color);
+          text-shadow: 0 0 15px var(--secondary-accent-color);        
+        }
+        :host([appearance~="plain"]) .button.disabled,
+        :host([appearance="plain"]) .button.disabled {
+          box-shadow: var(--shadow-button-inset);
+          background-color: var(--grey-1-color);
+          color: var(--grey-9-color);
+        }
+    .: |
+      ha-dialog {       
+        --vertical-align-dialog: center !important;                    /* Adjust dialog vertical alignment and remove default background/border for the dialog button area */
+      }
+
+  #################################
+  # CARD_MOD: ha-more-info-dialog
+  # Note: more-info applies styles rooted in the ha-dialog element of more-info dialogs.
+  #################################
+  card-mod-more-info-yaml: |
+    "* $": |
+      :host button.button {
+        box-shadow: var(--shadow-button-outset);
+      }
+      :host button.button:is(.disabled) {
+        box-shadow: var(--shadow-inset);
+        color: var(--disabled-text-color) !important;
+      }
+      :host button.button:not(.disabled):not(.loading):hover {
+        color: var(--primary-color) !important;
+      }
+      :host button.button:not(.disabled):not(.loading):active {
+        box-shadow: var(--shadow-inset);
+        color: var(--primary-color) !important;
+      }
+    ha-progress-bar:
+      $: |
+        div.progress-bar {
+        }
+    ha-more-info-info $ more-info-content $:
+      more-info-light $: |
+        div ha-attributes,
+        div ha-more-info-light-favorite-colors,
+        div ha-more-info-control-select-container {
+          {# Remove the favorite colors and attributes box for a cleaner look on light more-info #}
+          display: none;
+        }
+      "more-info-light$":
+        "div.controls > ha-state-control-light-brightness $": |
+          ha-control-slider {
+            transform: rotate(0deg);
+          }
+      hui-section>hui-grid-section$: |
+        :host .type-grid-section {
+          display: none;
+        }
+    $: |
+      div.mdc-dialog div.mdc-dialog__surface {
+        {# Includes entity more-info such as lights and update pop-ups in Config Settings #}
+        box-shadow: var(--ha-dialog-box-shadow);
+        transition: var(--ha-dialog-transition);
+      }
+      div.mdc-dialog div.mdc-dialog__scrim {
+        backdrop-filter: var(--ha-dialog-scrim-backdrop-filter);
+        background-color: var(--dialog-scrim-color);
+      }
+    .: |
+      ha-dialog {       
+        --vertical-align-dialog: center !important;                    /* Adjust dialog vertical alignment and remove default background/border for the dialog button area */
+        --dialog-surface-position: relative;
+      }
+
+
+  # # Buttons on more-info update and info pop-ups
+  # ha-more-info-info $ more-info-content $ more-info-update $ ha-button $: |
+  #   :host .button {
+  #     min-width: 80px;
+  #     box-shadow: var(--shadow-outset);
+  #     --wa-color-on-loud: var(--primary-text-color);
+  #     --ha-color-fill-primary-loud-active: var(--grey-1-color);
+  #     --ha-color-fill-primary-normal-active: var(--grey-1-color);
+  #     --ha-color-fill-primary-normal-hover: var(--grey-1-color);
+  #     --ha-color-fill-primary-loud-active: var(--grey-1-color);
+  #     --ha-color-fill-primary-loud-hover: var(--grey-1-color);
+  #   }
+
+
+  # # Buttons on type-browser-mod-popup
+  # ha-button:
+  #   $: |
+  #     :host([appearance~="plain"]) button.button,
+  #     :host([appearance="plain"]) button.button,
+  #     :host([appearance~="filled"]) button.button,
+  #     :host([appearance="filled"]) button.button {
+  #       box-shadow: var(--shadow-button-outset);
+  #       background-color: var(--grey-1-color);
+  #       border: none;
+  #     }
+  #     :host([appearance~="plain"]) button.button:not(.disabled):not(.loading):hover,
+  #     :host([appearance="plain"]) button.button:not(.disabled):not(.loading):hover,
+  #     :host([appearance~="filled"]) button.button:not(.disabled):not(.loading):hover,
+  #     :host([appearance="filled"]) button.button:not(.disabled):not(.loading):hover {
+  #       background: var(--grey-1-color);
+  #       background-color: var(--grey-1-color);
+  #       color: var(--primary-color);
+  #     }
+  #     :host([appearance~="filled"]) button.button:not(.disabled):not(.loading):active,
+  #     :host([appearance="filled"]) button.button:not(.disabled):not(.loading):active {
+  #       box-shadow: var(--shadow-button-inset);
+  #       background-color: var(--grey-1-color);
+  #       color: var(--primary-color);
+  #     }
+  #     :host([appearance~="plain"]) .button.disabled,
+  #     :host([appearance="plain"]) .button.disabled {
+  #       box-shadow: var(--shadow-button-inset);
+  #       color: var(--ha-color-on-disabled-quiet);
+  #     }
+
+  # # Buttons on entity-registry-settings
+  # ha-more-info-settings$entity-registry-settings$div.buttons>ha-button$: |
+  #   :host([appearance~="accent"]) button.button,
+  #   :host([appearance="accent"]) button.button {
+  #     box-shadow: var(--shadow-button-outset);
+  #     background-color: var(--grey-1-color);
+  #     border: none;
+  #   }
+  #   :host([appearance~="accent"]) button.button:not(.disabled):not(.loading):hover,
+  #   :host([appearance="accent"]) button.button:not(.disabled):not(.loading):hover {
+  #     background: var(--grey-1-color);
+  #     background-color: var(--grey-1-color);
+  #     color: var(--primary-color);
+  #   }
+  #   :host([appearance~="accent"]) button.button:not(.disabled):not(.loading):active,
+  #   :host([appearance="accent"]) button.button:not(.disabled):not(.loading):active {
+  #     box-shadow: var(--shadow-button-inset);
+  #     background-color: var(--grey-1-color);
+  #     color: var(--primary-color);
+  #   }
+  #   :host([appearance~="plain"]) .button.disabled,
+  #   :host([appearance="plain"]) .button.disabled {
+  #     box-shadow: var(--shadow-button-inset);
+  #     color: var(--ha-color-on-disabled-quiet);
+  #   }
+
+
+  #################################
+  # CARD_MOD: ha-top-app-bar-fixed
+  #################################
+  card-mod-top-app-bar-fixed: |
+    :host {
+      --primary-background-color: #ffffffff;
+    }
+    header.mdc-top-app-bar.mdc-top-app-bar--fixed {
+      {# Action Items menu in top right #}
+      --mdc-shape-medium: 16px;
+      --mdc-theme-on-surface: rgba(250, 250, 255, 0.95);
+      --mdc-theme-text-primary-on-background: rgba(250, 250, 255, 0.95);
+      --mdc-theme-surface: rgba(0, 5, 10, 0.8);
+    }
+    div.mdc-top-app-bar--fixed-adjust {
+      --primary-background-color: rgba(30, 30, 30, 0.01);
+    }
+
+  #################################
+  # CARD_MOD: ha-panel-developer-tools (~/developer-tools)
+  #################################
+  card-mod-developer-tools-yaml: |
+    developer-yaml-config $ ha-card:nth-of-type(2) $: |
+      :host slot {
+        display: block;
+        padding-top: 5px;
+        overflow: auto;
+        color: var(--warning-color);
+        font-weight: 600;
+      }
+    developer-tools-router>developer-tools-state:
+      $ha-expansion-panel$: |
+        :host([outlined]) {
+          box-shadow: var(--shadow-inset) !important;
+          border-radius: 1.2rem;
+          border: none;
+        }
+    "developer-tools-router > developer-tools-state $":
+      "developer-tools-state-renderer $": |
+        div>div.row.filters {
+          box-shadow: var(--shadow-inset);
+          --table-row-alternative-background-color: transparent;
+          border-radius: 1.2rem;
+          border: none;
+        }
+  #################################
+  # CARD_MOD: ha-panel-custom (inc https://github.com/thomasloven/hass-browser_mod)
+  #################################
+  card-mod-panel-custom-yaml: |
+    browser-mod-panel: |
+      :host {
+      }
+
+  #################################
+  # CARD_MOD: ha-panel-config (/config)
+  #################################
+  card-mod-config-yaml: |
+    "* $": |
+      ha-config-section {
+        --card-background-color: transparent; /* used by     --md-sys-color-surface */
+      }
+      hass-tabs-subpage, hass-subpage {
+        background-color: unset !important;
+      }
+      ha-sidebar {
+        background-color: unset !important;
+      }  
+      :host hass-subpage div.container {
+        gap: 5px;
+      }
+      :host hass-subpage div.container div.header div.actions ha-button {
+        box-shadow: var(--shadow-raised);
+        overflow: visible;
+      }
+      ha-outlined-field {
+        box-shadow: var(--shadow-inset);
+      }
+      ha-config-entry-row {
+        box-shadow: var(--shadow-outset);
+        border-radius: var(--ha-card-border-radius);
+      }
+      ha-input-search {
+        box-shadow: var(--shadow-inset);
+        border-radius: var(--ha-card-border-radius);
+      }
+    "hass-tabs-subpage > ha-data-table $":
+      "div > slot > div > search-input-outlined $":
+        "ha-outlined-text-field $ span > ha-outlined-field $": |
+          .outline {
+              box-shadow: var(--shadow-inset);
+            }
+    .: |
+      :host {
+        {## Action Items menu in top right ##}
+        --mdc-shape-medium: 16px;
+        --mdc-theme-on-surface: rgba(250, 250, 255, 0.95);
+        --mdc-theme-text-primary-on-background: rgba(250, 250, 255, 0.95);
+        --mdc-theme-surface: rgba(0, 5, 10, 0.8);
+        --md-list-container-color: transparent;
+        --primary-background-color: transparent;
+      }
+
+  #################################
+  # GLOBAL-MOD
+  # https://github.com/alex3305/lovelace-global-mod
+  #################################
+
+  root-selector: ""
+  root-style: |
+    :host, * {
+      --card-mod-theme: my_neumorphic;
+      text-rendering: optimizeLegibility;
+    }
+    @media all and (max-width: 767px) {
+      :host { max-width: 100%; overflow-x: hidden;}
+    }
+  root-style-light: |
+    ::selection {
+      text-shadow: none;
+      color: hsl(0, 0%, 90%);
+      background-color: hsl(290, 100%, 50%);
+    }
+  root-style-dark: |
+    ::selection {
+      text-shadow: none;
+      color: hsl(0, 0%, 0%);
+      background-color: hsl(290, 100%, 50%);
+    }
+
+  drawer-modal-selector: 'home-assistant-main$ha-drawer$'
+  drawer-modal-style: |
+    aside.mdc-drawer {
+      box-shadow: var(--shadow-outset);
+    }
+
+  view-background-selector: ""
+  view-background-style: |
+    ha-drawer {
+      background: var(--view-background);
+    }
+  view-background-style-light: |
+    :host {
+      --view-background: hsl(0, 0%, 90%);
+      --primary-text-color: hsl(0, 0%, 10%);
+    }
+  view-background-style-dark: |
+    :host {
+      --view-background: var(--grey-1-color);
+      --card-background-color: var(--grey-card-color);
+      --background-color: var(--grey-1-color);
+      --primary-color: hsl(280, 55%, 58%);
+      --primary-light-color: hsl(290, 55%, 68%);
+      --primary-dark-color: hsl(270, 55%, 48%);
+    }
+
+  # view-background-selector: ""
+  # view-background-style: |
+  #   ha-drawer {
+  #     background: var(--view-background);
+  #   }
+  # view-background-style-light: |
+  #   :host {
+  #     --view-background: hsl(0, 0%, 90%);
+  #     --primary-text-color: hsl(0, 0%, 10%);
+  #   }
+  # view-background-style-dark: |
+  #   :host {
+  #     --view-background: var(--grey-1-color);
+  #     --card-background-color: var(--grey-1-color);
+  #     --background-color: var(--grey-1-color);
+  #     --primary-color: hsla(300, 100%, 50%, 1);
+  #     --primary-light-color: hsla(290, 100%, 50%, 1);
+  #     --primary-dark-color: hsla(310, 100%, 50%, 1);
+  #   }
+
+
+
+  # ============================================================================
+  # MODE DEFINITIONS - Light and Dark
+  # ============================================================================
+  modes:
+    light:
+      # ========================================================================
+      # NEUMORPHIC DESIGN TOKENS - LIGHT MODE
+      # ========================================================================
+
+      # --- Core Neumorphic Colors ---
+      # Base surface: soft gray like reference
+      neumorphic-base: "#E4E8EE"
+      neumorphic-base-rgb: "228, 232, 238"
+      neumorphic-raised: "#E4E8EE"
+      neumorphic-inset: "#D1D9E6"
+
+      # Shadow colors for 3D effect
+      neumorphic-shadow-light: "rgba(255, 255, 255, 0.8)"
+      neumorphic-shadow-dark: "rgba(163, 177, 198, 0.6)"
+      neumorphic-shadow-light-strong: "rgba(255, 255, 255, 0.9)"
+      neumorphic-shadow-dark-strong: "rgba(163, 177, 198, 0.7)"
+
+      # --- Text Colors ---
+      primary-text-color: "#2D3142"
+      secondary-text-color: "#5C6378"
+      text-primary-color: "#FFFFFF"
+      disabled-text-color: "#9BA3B5"
+      text-light-primary-color: "#F5F5F5"
+
+      # --- Primary Accent Colors ---
+      # Sophisticated blue-slate for premium feel
+      primary-color: "#4A6FA5"
+      dark-primary-color: "#3A5A8A"
+      light-primary-color: "#7A9FD5"
+      accent-color: "#D4A574"
+
+      # --- Background Colors ---
+      view-background: "hsl(0, 0%, 90%)"
+      primary-background-color: "#E4E8EE"
+      secondary-background-color: "#D1D9E6"
+      card-background-color: "#E4E8EE"
+      divider-color: "rgba(45, 49, 66, 0.08)"
+
+      # --- State Colors ---
+      state-icon-color: "#5C6378"
+      state-icon-active-color: "#4A6FA5"
+      state-icon-unavailable-color: "#9BA3B5"
+      state-on-color: "#4A9F6E"
+      state-off-color: "#9BA3B5"
+
+      # Success/Warning/Error
+      success-color: "#4A9F6E"
+      warning-color: "#D4A574"
+      error-color: "#C75B5B"
+      info-color: "#4A6FA5"
+
+      # --- Card Styling ---
+      ha-card-background: "linear-gradient(180deg, rgba(135, 180, 220, 0.12) 0%, rgba(135, 180, 220, 0.05) 30%, #E4E8EE 60%)"
+      ha-card-border-radius: "20px"
+      ha-card-border-width: "0px"
+      ha-card-border-color: "transparent"
+      ha-card-box-shadow: "9px 9px 16px rgba(163, 177, 198, 0.6), -9px -9px 16px rgba(255, 255, 255, 0.8)"
+
+      # --- Header ---
+      app-header-background-color: "#E4E8EE"
+      app-header-text-color: "#2D3142"
+      app-header-edit-background-color: "#D1D9E6"
+      app-header-edit-text-color: "#2D3142"
+
+      # --- Sidebar ---
+      sidebar-background-color: "#E4E8EE"
+      sidebar-text-color: "#2D3142"
+      sidebar-icon-color: "#5C6378"
+      sidebar-selected-background-color: "#D1D9E6"
+      sidebar-selected-text-color: "#4A6FA5"
+      sidebar-selected-icon-color: "#4A6FA5"
+      # md-list-item-leading-space: "8px"
+      # md-list-item-trailing-space: "8px"
+      # md-list-item-leading-icon-size: "1.8rem"
+      #app-safe-area-inset-left: "-56px"
+
+      # --- Dialog / Modal ---
+      mdc-dialog-scrim-color: "rgba(45, 49, 66, 0.3)"
+
+      # --- Buttons / Controls ---
+      mdc-button-raised-box-shadow: "5px 5px 10px rgba(163, 177, 198, 0.5), -5px -5px 10px rgba(255, 255, 255, 0.7)"
+
+      # Sliders
+      slider-color: "#4A6FA5"
+      slider-bar-color: "#D1D9E6"
+      slider-secondary-color: "#7A9FD5"
+      control-slider-thickness: "20px"
+      control-slider-background-opacity: "1"
+      control-slider-background: "transparent"
+      control-button-border-radius: "8px"
+
+      # Toggles / Switches
+      toggle-button-color: "#4A6FA5"
+      toggle-button-unchecked-color: "#9BA3B5"
+      switch-checked-color: "#4A6FA5"
+      switch-unchecked-color: "#9BA3B5"
+      switch-checked-track-color: "#7A9FD5"
+      switch-unchecked-track-color: "#D1D9E6"
+
+      # --- Input Fields ---
+      input-fill-color: "#D1D9E6"
+      input-ink-color: "#2D3142"
+      input-label-ink-color: "#5C6378"
+      input-idle-line-color: "transparent"
+      input-hover-line-color: "#4A6FA5"
+      input-disabled-fill-color: "#E4E8EE"
+      input-disabled-ink-color: "#9BA3B5"
+
+      # --- Labels / Badges ---
+      label-badge-background-color: "#E4E8EE"
+      label-badge-text-color: "#2D3142"
+      label-badge-red: "#C75B5B"
+      label-badge-green: "#4A9F6E"
+      label-badge-blue: "#4A6FA5"
+      label-badge-yellow: "#D4A574"
+      label-badge-grey: "#9BA3B5"
+
+      # --- Scrollbar ---
+      scrollbar-thumb-color: "rgba(45, 49, 66, 0.2)"
+
+      # --- Toast / Notifications ---
+      paper-toast-background-color: "#2D3142"
+      paper-toast-color: "#F5F5F5"
+
+      # --- Code Editor ---
+      code-editor-background-color: "#D1D9E6"
+      codemirror-atom: "#C75B5B"
+      codemirror-comment: "#9BA3B5"
+      codemirror-keyword: "#4A6FA5"
+      codemirror-string: "#4A9F6E"
+      codemirror-number: "#D4A574"
+
+      # --- Layout Spacing ---
+      masonry-view-card-margin: "8px"
+      grid-card-gap: "16px"
+      stack-card-margin: "8px"
+      horizontal-stack-card-margin: "0 8px"
+      vertical-stack-card-margin: "8px 0"
+
+      # --- Chip Styling ---
+      chip-background-color: "#E4E8EE"
+      chip-height: "40px"
+      chip-padding: "2px"
+      chip-text-color: "#2D3142"
+      chip-icon-color: "#5C6378"
+      chip-box-shadow: "5px 5px 10px rgba(163, 177, 198, 0.5), -5px -5px 10px rgba(255, 255, 255, 0.7)"
+
+    dark:
+      # ========================================================================
+      # NEUMORPHIC DESIGN TOKENS - DARK MODE
+      # ========================================================================
+
+      # Under modes: > dark: — replace these values:
+      mdc-theme-surface: "#000000"
+      shadow-dark: "hsl(0, 0%, 0%)"
+      shadow-light: "hsla(0, 0%, 20%, 0.9)"
+      ha-button-box-shadow: "-0.125rem -0.125rem 0.1875rem hsl(0, 0%, 20%, 0.9), 0.1875rem 0.1875rem 0.1875rem hsl(0,0%,0%)"
+      shadow-outset: "0.3rem 0.3rem 0.5rem hsl(0,0%,0%), -0.2rem -0.2rem 0.4rem hsla(0,0%,20%,0.9)"
+      shadow-inset: "inset 0.2rem 0.2rem 0.5rem hsl(0,0%,0%), inset -0.2rem -0.2rem 0.5rem hsla(0,0%,20%,0.9)"
+      # shadow-raised: "inset 0.2rem 0.2rem 0.5rem hsla(0,0%,20%,0.9), inset -0.2rem -0.2rem 0.5rem hsl(0,0%,0%), 0.3rem 0.3rem 0.5rem hsl(0,0%,0%), -0.2rem -0.2rem 0.4rem hsla(0,0%,20%,0.9)"
+      shadow-raised: "0.2rem 0.2rem 0.5rem hsla(0,0%,20%,0.9), inset -0.2rem -0.2rem 0.5rem hsl(0,0%,0%), 0.3rem 0.3rem 0.5rem hsl(0,0%,0%), -0.2rem -0.2rem 0.4rem hsla(0,0%,20%,0.9)"
+      shadow-sunken: "-0.3rem -0.3rem 0.5rem hsl(0,0%,0%), 0.2rem 0.2rem 0.4rem hsla(0,0%,20%,0.9)"
+      shadow-ridge: "inset 0.2rem 0.2rem 0.5rem hsl(0,0%,0%), inset -0.2rem -0.2rem 0.5rem hsla(0,0%,20%,0.9), 0.3rem 0.3rem 0.5rem hsla(0,0%,20%,0.9), -0.2rem -0.2rem 0.4rem hsl(0,0%,0%)"
+      shadow-button-outset: "-0.125rem -0.125rem 0.1875rem hsl(0, 0%, 20%, 0.9), 0.1875rem 0.1875rem 0.1875rem hsl(0,0%,0%)"
+      shadow-button-inset: "inset -0.125rem -0.125rem 0.1875rem hsl(0, 0%, 20%, 0.9), inset 0.1875rem 0.1875rem 0.1875rem hsl(0,0%,0%)"
+      grey-1-color: "hsl(0, 0%, 10%)"
+      grey-2-color: "hsl(0, 0%, 20%)"
+      grey-3-color: "hsl(0, 0%, 30%)"
+      grey-4-color: "hsl(0, 0%, 40%)"
+      grey-5-color: "hsl(0, 0%, 50%)"
+      grey-9-color: "hsl(0, 0%, 90%)"
+      grey-card-color: "hsl(0, 0%, 10%)"
+      grey-fade-1-color: "hsla(0, 0%, 10%, 0.9)"
+      grey-fade-2-color: "hsla(0, 0%, 20%, 0.9)"
+      primary-color: "hsl(300, 100%, 50%)"
+      dark-primary-color: "hsl(310, 100%, 50%)"
+      light-primary-color: "hsl(290, 100%, 50%)"
+      accent-color: "hsl(290, 100%, 50%)"
+      primary-background-color: "hsl(0, 0%, 10%)"
+      card-background-color: "var(--grey-card-color)"
+      ha-card-background: "var(--grey-card-color)"
+      ha-card-box-shadow: "var(--shadow-outset)"
+      secondary-text-color: "hsl(0, 0%, 60%)"
+      disabled-text-color: "hsl(0, 0%, 40%)"
+      switch-checked-color: "hsl(300, 100%, 50%)"
+      switch-unchecked-color: "hsl(0, 0%, 10%)"
+      switch-checked-track-color: "hsl(290, 100%, 50%)"
+      switch-unchecked-track-color: "hsl(0, 0%, 10%)"
+      toggle-button-color: "hsl(300, 100%, 50%)"
+      slider-color: "hsl(300, 100%, 50%)"
+      slider-secondary-color: "hsl(290, 100%, 50%)"
+      slider-bar-color: "hsl(0, 0%, 20%)"
+      chip-background-color: "hsl(0, 0%, 10%)"
+      chip-text-color: "hsl(0, 0%, 90%)"
+      chip-icon-color: "hsl(0, 0%, 40%)"
+      input-fill-color: "hsl(0, 0%, 10%)"
+      input-hover-line-color: "hsl(300, 100%, 50%)"
+      state-icon-active-color: "hsl(300, 100%, 50%)"
+      state-on-color: "hsl(300, 100%, 50%)"
+
+      secondary-accent-color: "hsl(123, 100%, 50%)"
+      warning-accent-color: "hsl(38, 100%, 58%)"
+      neumo-transition-fast: "box-shadow 200ms ease, color 200ms ease, background-color 200ms ease"
+      neumo-scene-button-height: "40px"
+      neumo-scene-button-radius: "0.9rem"
+      neumo-card-radius: "1.2rem"
+      neumo-room-title-height: "60px"
+
+      # --- Core Neumorphic Colors ---
+      # Base surface: rich charcoal for depth
+      # neumorphic-base: "rgb(74, 74, 74)"
+      neumorphic-base: "rgb(31, 41, 55)"
+      neumorphic-base-dark: "rgb(23, 31, 41)"
+      neumorphic-base-light: "#273345"
+      neumorphic-base-rgb: "31, 41, 55"
+      neumorphic-inset: "rgb(34, 34, 38)"
+
+      white-color: "hsla(0, 0%, 100%, 1)"
+      black-color: "hsla(0, 0%, 0%, 1)"
+      # grey-1-color: "hsla(0, 0%, 10%, 1)"
+      # grey-2-color: "hsla(0, 0%, 20%, 1)"
+      # grey-3-color: "hsla(0, 0%, 30%, 0.90)"
+      # grey-4-color: "hsla(0, 0%, 40%, 1)"
+      # grey-5-color: "hsla(0, 0%, 90%, 1)"
+      # grey-card-color: "hsla(0, 0%, 12%, 1)"
+      # grey-fade-1-color: "hsla(0, 0%, 10%, 0.9)"
+      # grey-fade-2-color: "hsla(0, 0%, 20%, 0.9)"
+      # Shadow colors for 3D effect
+      # neumorphic-shadow-light: "rgba(58, 58, 58, 0.6)"
+      # neumorphic-shadow-light-rgb: "58, 58, 58"
+      # neumorphic-shadow-dark: "rgba(18, 18, 18, 0.7)"
+      # neumorphic-shadow-dark-rgb: "18, 18, 18"
+      # neumorphic-shadow-light-strong: "rgba(68, 68, 68, 0.7)"
+      # neumorphic-shadow-light-strong-rgb: "68, 68, 68"
+      # neumorphic-shadow-dark-strong: "rgba(10, 10, 10, 0.8)"
+      # neumorphic-shadow-dark-strong-rgb: "10, 10, 10"
+
+      # # Convex (raised) shadow - cards, buttons
+      # neumorphic-box-shadow: "6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light)"
+      # neumorphic-box-shadow-sm: "3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light)"
+      # neumorphic-box-shadow-lg: "10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light)"
+
+      # Concave (inset) shadow - inputs, pressed states
+      # neumorphic-inset-shadow: "inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light)"
+      # neumorphic-inset-shadow-sm: "inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light)"
+      # neumorphic-inset-shadow-lg: "inset 8px 8px 16px var(--shadow-dark), inset -8px -8px 16px var(--shadow-light)"
+
+      # inset-shadow-sm: "inset 4px 4px 8px -1px var(--shadow-light), inset -4px -4px 8px -1px var(--shadow-dark)"
+      # inset-shadow: "inset 8px 8px 16px -2px var(--shadow-light), inset -8px -8px 16px -2px var(--shadow-dark)"
+      # inset-shadow-lg: "inset 12px 12px 24px -2px var(--shadow-light), inset -12px -12px 24px -2px var(--shadow-dark)"
+
+      # shadow-dark: "hsl(0, 0%, 5%)"   # darker than bg (10%), used for bottom-right drop shadow
+      # shadow-light: "hsla(0, 0%, 25%, 0.85)" # lighter than bg (10%), used for top-left highlight
+      # ha-color-shadow-light: "hsla(0, 0%, 0%, 0.08)"
+      # ha-color-shadow-dark: "hsla(0, 0%, 0%, 0.28)"
+
+      # box-shadow-sm: "4px 4px 8px -1px var(--shadow-dark), -4px -4px 8px -1px var(--shadow-light)"
+      # box-shadow: "8px 8px 16px -2px var(--shadow-dark), -8px -8px 16px -2px var(--shadow-light)"
+      # box-shadow-lg: "12px 12px 24px -2px var(--shadow-dark), -12px -12px 24px -2px var(--shadow-light)"
+      # shadow-blend-base-stop: "85%"
+      # shadow-blend-accent-stop: "15%"
+
+      # shadow-outset: "0.3rem 0.3rem 0.5rem hsl(0,0%,5%), -0.2rem -0.2rem 0.4rem hsla(0,0%,25%,0.85)"
+      # shadow-raised: "inset 0.2rem 0.2rem 0.5rem hsla(0,0%,25%,0.85), inset -0.2rem -0.2rem 0.5rem hsl(0,0%,5%), 0.3rem 0.3rem 0.5rem hsl(0,0%,5%), -0.2rem -0.2rem 0.4rem hsla(0,0%,25%,0.85)"
+      # shadow-inset: "inset 0.2rem 0.2rem 0.5rem hsl(0,0%,5%), inset -0.2rem -0.2rem 0.5rem hsla(0,0%,25%,0.85)"
+      # shadow-sunken: "-0.3rem -0.3rem 0.5rem hsl(0,0%,5%), 0.2rem 0.2rem 0.4rem hsla(0,0%,25%,0.85)"
+      # shadow-ridge: "inset 0.2rem 0.2rem 0.5rem hsl(0,0%,5%), inset -0.2rem -0.2rem 0.5rem hsla(0,0%,25%,0.85), 0.3rem 0.3rem 0.5rem hsl(0,0%,5%), -0.2rem -0.2rem 0.4rem hsla(0,0%,25%,0.85)"
+      # shadow-button-outset: "0.3rem 0.3rem 0.5rem hsl(0,0%,5%), -0.2rem -0.2rem 0.4rem hsla(0,0%,25%,0.85)"
+      # shadow-button-inset: "inset 0.2rem 0.2rem 0.5rem hsl(0,0%,5%), inset -0.2rem -0.2rem 0.5rem hsla(0,0%,25%,0.85)"
+
+      shadow-progress-bar-ridge: "inset 0.2rem 0.2rem 0.5rem black, inset -0.2rem -0.2rem 0.5rem hsla(0, 0%, 20%, 0.90), 0.3rem 0.3rem 0.5rem black, -0.2rem -0.2rem 0.4rem hsla(0, 0%, 20%, 0.90)"
+
+      progress-bar-shadow: "0.3rem 0.3rem 0.5rem hsl(0,0%,5%), -0.2rem -0.2rem 0.4rem hsla(0,0%,25%,0.85)"
+      mushroom-brightness-shadow: "inset -0.5rem -0.5rem 1rem -0.125rem rgba(255, 255, 255, 0.15), inset 0.5rem 0.5rem 1rem -0.125rem rgba(0, 0, 0, 0.3)"
+      circle-shadow-inset: "inset 0.625rem 0.625rem 1.25rem -0.125rem hsl(0,0%,5%), inset -0.625rem -0.625rem 1.25rem -0.125rem hsla(0,0%,25%,0.85)"
+      circle-shadow-outset: "0.625rem 0.625rem 1.25rem -0.125rem hsl(0,0%,5%), -0.625rem -0.625rem 1.25rem -0.125rem hsla(0,0%,25%,0.85)"
+      shadow-popup: "-0.375rem -0.375rem 0.75rem hsla(0,0%,25%,0.85), 0.375rem 0.375rem 0.75rem hsl(0,0%,5%)"
+
+      ha-box-shadow-s: "var(--ha-shadow-offset-x-sm) var(--ha-shadow-offset-y-sm) var(--ha-shadow-blur-sm) var(--ha-shadow-spread-sm) var(--ha-color-shadow-light)"
+      ha-box-shadow-m: "var(--ha-shadow-offset-x-md) var(--ha-shadow-offset-y-md) var(--ha-shadow-blur-md) var(--ha-shadow-spread-md) var(--ha-color-shadow-light)"
+      ha-box-shadow-l: "var(--ha-shadow-offset-x-lg) var(--ha-shadow-offset-y-lg) var(--ha-shadow-blur-lg) var(--ha-shadow-spread-lg) var(--ha-color-shadow-light)"
+
+      # --- Text Colors ---
+      primary-text-color: "hsla(0, 0%, 90%, 1)"
+      rgb-primary-text-color: "230, 230, 230"
+      rgb-secondary-text-color: "153, 153, 153"
+      # secondary-text-color: "rgb(var(--rgb-secondary-text-color))"
+      # disabled-text-color: "hsl(0, 0%, 45%)"
+      text-primary-color: "#121212"
+      text-light-primary-color: "rgb(250, 250, 250)"
+
+      # --- Primary Accent Colors ---
+      # Vibrant blue for dark mode contrast
+      #primary-color: "#6B9BD2"
+      # dark-primary-color: "#5585BC"
+      # light-primary-color: "#8BB5E8"
+      # accent-color: "#E8B896"
+      background-color: "var(--grey-1-color)"
+      # primary-color: "hsl(280, 55%, 58%)"
+      # dark-primary-color: "hsl(270, 55%, 48%)"
+      # light-primary-color: "hsl(290, 55%, 68%)"
+
+      # --- Background Colors ---
+      view-background: "var(--grey-1-color)"
+      # primary-background-color: "var(--grey-1-color)"
+      secondary-background-color: "hsla(0, 0%, 7%, 1)"
+      # card-background-color: "var(--grey-card-color)"
+      divider-color: "rgba(232, 228, 223, 0.08)"
+
+      # --- State Colors ---
+      state-icon-color: "var(--secondary-text-color)"
+      # state-icon-active-color: "#6B9BD2"
+      state-icon-unavailable-color: "#6A6A6E"
+      # state-on-color: "#6BC78E"
+      state-off-color: "#6A6A6E"
+      filament-light-color: "rgb(255,142,33)"
+
+      # Success/Warning/Error
+      success-color: "#6BC78E"
+      warning-color: "#E8B896"
+      error-color: "#E87B7B"
+      info-color: "#6B9BD2"
+
+      # --- Card Styling ---
+      #ha-card-background: "linear-gradient(180deg, rgba(107, 155, 210, 0.15) 0%, rgba(107, 155, 210, 0.06) 30%, #2A2A2E 60%)"
+      # ha-card-background: "var(--grey-card-color)"
+      # ha-card-border-radius: "15px"
+      ha-card-border-color: "transparent"
+      # ha-card-box-shadow: "var(--shadow-outset)"
+      ha-card-inset-shadow: "var(--shadow-inset)"
+      ha-card-backdrop-filter: "blur(2px)"
+      md-list-container-color: "transparent"
+
+
+      ha-progress-bar-track-color: "var(--slider-color)"
+      ha-progress-bar-track-height: "0.5rem"
+      ha-progress-bar-border-radius: "5px"
+      ha-progress-bar-indicator-color: "#03a9f4"
+      ha-progress-bar-indicator-background: "#f441a5"
+      ha-progress-bar-indicator-highlight-width: "0.5rem"
+      ha-progress-bar-indicator-highlight-height: "0.5rem"
+      ha-progress-bar-indicator-highlight-image: "var(--slider-gradient)"
+
+      # --- Dialog Styling ---
+      ha-dialog-surface-background: "var(--grey-1-color)"
+      ha-dialog-box-shadow: "0.857rem 0.857rem 1.714rem -0.143rem hsl(0,0%,5%), -0.857rem -0.857rem 1.714rem -0.143rem hsla(0,0%,25%,0.85)"
+      dialog-box-shadow: "0.857rem 0.857rem 1.714rem -0.143rem hsl(0,0%,5%), -0.857rem -0.857rem 1.714rem -0.143rem hsla(0,0%,25%,0.85)"
+      dialog-scroll-divider-color: "transparent"
+      # ha-dialog-surface-backdrop-filter: "blur(4px)" # causes issues with some drop downs
+      # dialog-container-padding: "1rem"
+
+      # --- Header ---
+      app-header-background-color: "transparent"
+      app-header-text-color: "var(--primary-text-color)"
+      app-header-edit-background-color: "var(--grey-4-color)"
+      app-header-edit-text-color: "var(--primary-text-color)"
+      app-header-backdrop-filter: "none"
+      app-header-border-bottom: "0"
+
+      # --- Sidebar ---
+      sidebar-background-color: "var(--grey-1-color)"
+      sidebar-text-color: "var(--primary-text-color)"
+      sidebar-icon-color: "var(--primary-text-color)"
+      # ha-ripple-color: "transparent"
+      # ha-ripple-pressed-color: "transparent"
+      # ha-ripple-hover-color: "transparent"
+      # custom-sidebar-selection-background: "transparent"
+      # custom-sidebar-selection-opacity: "0"
+      sidebar-selected-icon-color: "var(--secondary-accent-color)"
+      sidebar-selected-text-color: "var(--primary-text-color)"
+      # sidebar-selected-background-color: "#222226"
+      # sidebar-selected-text-color: "#6B9BD2"
+      # sidebar-selected-icon-color: "#6B9BD2"
+
+      # --- Dialog / Modal ---
+      mdc-dialog-scrim-color: "var(--dialog-scrim-color)"
+      wa-color-overlay-modal: "var(--dialog-scrim-color)"
+
+      # --- Buttons / Controls ---
+      mdc-button-raised-box-shadow: "0.3rem 0.3rem 0.5rem var(--black-color), -0.2rem -0.2rem 0.4rem var(--grey-3-color)"
+
+      wa-color-fill-loud: "var(--accent-color)"
+      button-color-fill-normal-active: "var(--grey-1-color)"
+      button-color-fill-normal-hover: "var(--grey-1-color)"
+      button-color-fill-loud-active: "var(--grey-1-color)"
+      button-color-fill-loud-hover: "var(--grey-1-color)"
+
+      wa-color-brand-fill-loud: "var(--accent-color)"
+      wa-color-brand-fill-normal: "var(--grey-1-color)"
+      wa-color-brand-fill-quiet: "var(--grey-1-color)"
+      wa-color-brand-border-loud: "var(--grey-1-color)"
+      wa-color-brand-border-normal: "var(--grey-1-color)"
+      wa-color-brand-border-quiet: "var(--grey-1-color)"
+      wa-color-brand-on-loud: "var(--primary-text-color)"
+      wa-color-brand-on-normal: "var(--primary-text-color)"
+      wa-color-brand-on-quiet: "var(--primary-text-color)"
+      ha-color-fill-primary-normal-active: "var(--grey-1-color)"
+      ha-color-fill-primary-normal-hover: "var(--grey-1-color)"
+      ha-color-fill-primary-loud-active: "var(--grey-1-color)"
+      ha-color-fill-primary-loud-hover: "var(--grey-1-color)"
+      ha-color-fill-disabled-loud-resting: "var(--grey-1-color)"
+      ha-color-fill-disabled-normal-resting: "var(--grey-1-color)"
+      ha-color-fill-disabled-quiet-resting: "var(--grey-1-color)"
+
+      # Sliders
+      # slider-color: "#6B9BD2"
+      # slider-bar-color: "#222226"
+      # slider-secondary-color: "#8BB5E8"
+      slider-gradient: "linear-gradient(to right, #03a9f4 25%, #f441a5 100%)"
+
+      # Toggles / Switches
+      toggle-button-unchecked-color: "#6A6A6E"
+      # toggle-button-color: "#6B9BD2"
+      # switch-checked-color: "#6B9BD2"
+      # switch-unchecked-color: "#6A6A6E"
+      # switch-checked-track-color: "#8BB5E8"
+      # switch-unchecked-track-color: "#222226"
+
+      # --- Input Fields ---
+      # input-fill-color: "var(--grey-2-color)"
+      input-ink-color: "#E8E4DF"
+      input-label-ink-color: "#A8A4A0"
+      input-idle-line-color: "transparent"
+      # input-hover-line-color: "#6B9BD2"
+      input-disabled-fill-color: "var(--grey-1-color)"
+      input-disabled-ink-color: "#6A6A6E"
+      mdc-text-field-fill-color: "hsla(0, 0%, 5%, 1)"
+      mdc-text-field-disabled-fill-color: "hsla(0, 0%, 5%, .6)"
+      mdc-select-fill-color: "hsla(0, 0%, 0%, 1)"
+      mdc-select-disabled-fill-color: "hsla(0, 0%, 0%, 1)"
+
+      ha-tooltip-box-shadow: "0.3rem 0.3rem 0.5rem black, -0.2rem -0.2rem 0.4rem rgba(51, 51, 51, 0.9)"
+
+      # --- Labels / Badges ---
+      label-badge-background-color: "#2A2A2E"
+      label-badge-text-color: "#E8E4DF"
+      label-badge-red: "#E87B7B"
+      label-badge-green: "#6BC78E"
+      label-badge-blue: "#6B9BD2"
+      label-badge-yellow: "#E8B896"
+      label-badge-grey: "#6A6A6E"
+
+      # --- Scrollbar ---
+      scrollbar-thumb-color: "rgba(232, 228, 223, 0.15)"
+
+      # --- Toast / Notifications ---
+      paper-toast-background-color: "#E8E4DF"
+      paper-toast-color: "#2A2A2E"
+
+
+      # --- Chip Styling ---
+      # chip-background-color: "#222226"
+      # chip-text-color: "#E8E4DF"
+      # chip-icon-color: "#A8A4A0"
+      chip-box-shadow: "var(--shadow-outset)"
+

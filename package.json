@@ -2,7 +2,7 @@
   "name": "home-assistant-vscode",
   "displayName": "Home Assistant Config Helper",
   "description": "Home Assistant Configuration Helper",
-  "version": "1.1.12",
+  "version": "1.1.13",
   "preview": false,
   "engines": {
     "vscode": "^1.99.0"
@@ -468,11 +468,6 @@
     ],
     "configurationDefaults": {
       "editor.semanticHighlighting.enabled": true,
-      "files.associations": {
-        "*.yaml": "home-assistant",
-        "*.yml": "home-assistant",
-        "*.jinja": "home-assistant-jinja"
-      },
       "files.autoGuessEncoding": true,
       "files.watcherExclude": {
         "**/tts/**": true,

@@ -41,5 +41,6 @@
     "notebook.inlineValues": "on",
     "emmet.useInlineCompletions": true,
     "github.copilot.chat.languageContext.inline.typescript.enabled": true,
-    "github.copilot.completions.chat.enabled": true
+    "github.copilot.completions.chat.enabled": true,
+    "sshfs.configs": []
 }

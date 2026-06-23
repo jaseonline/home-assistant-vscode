@@ -1,5 +1,16 @@
 [
   {
+    "name": "Home Assistant - Boolean",
+    "scope": [
+      "constant.language.boolean.home-assistant",
+      "constant.language.boolean.homeassistant"
+    ],
+    "settings": {
+      "foreground": "$neon.magenta",
+      "fontStyle": "bold"
+    }
+  },
+  {
     "name": "Home Assistant - Entity ID",
     "scope": [
       "constant.other.entity-id.home-assistant",
@@ -11,7 +22,7 @@
     }
   },
   {
-    "name": "Home Assistant - Entity Tag",
+    "name": "Home Assistant - Entity Name Tag",
     "scope": [
       "entity.name.tag.home-assistant",
       "entity.name.tag.homeassistant"
@@ -22,15 +33,24 @@
     }
   },
   {
-    "name": "Home Assistant - Domain (entity prefix)",
+    "name": "Home Assistant - Entity Name Type",
     "scope": [
       "entity.name.type.home-assistant",
-      "entity.name.type.homeassistant",
+      "entity.name.type.homeassistant"
+    ],
+    "settings": {
+      "foreground": "$pair.green",
+      "fontStyle": "regular"
+    }
+  },
+  {
+    "name": "Home Assistant - Domain (entity prefix)",
+    "scope": [
       "support.type.domain.home-assistant",
       "support.type.domain.homeassistant"
     ],
     "settings": {
-      "foreground": "$neon.yellow",
+      "foreground": "$neon.mint",
       "fontStyle": "regular"
     }
   },
@@ -41,7 +61,7 @@
       "entity.other.entity-name.homeassistant"
     ],
     "settings": {
-      "foreground": "$neon.magenta",
+      "foreground": "$pair.amber",
       "fontStyle": "regular"
     }
   },
@@ -52,7 +72,7 @@
       "punctuation.accessor.dot.homeassistant"
     ],
     "settings": {
-      "foreground": "$text.bright",
+      "foreground": "$pair.magenta",
       "fontStyle": "regular"
     }
   },
@@ -76,7 +96,7 @@
       "keyword.control.homeassistant"
     ],
     "settings": {
-      "foreground": "$neon.green",
+      "foreground": "$neon.amber",
       "fontStyle": "regular"
     }
   },
@@ -88,6 +108,17 @@
     ],
     "settings": {
       "foreground": "$neon.pink",
+      "fontStyle": "regular"
+    }
+  },
+  {
+    "name": "Home Assistant - !include",
+    "scope": [
+      "storage.type.tag-handle.home-assistant",
+      "storage.type.tag-handle.homeassistant"
+    ],
+    "settings": {
+      "foreground": "$pair.cyan",
       "fontStyle": "regular"
     }
   },
@@ -170,7 +201,7 @@
       "variable.other.readwrite.homeassistant"
     ],
     "settings": {
-      "foreground": "$purple",
+      "foreground": "$neon.magenta",
       "fontStyle": "regular"
     }
   },
@@ -183,7 +214,7 @@
       "constant.other.state.homeassistant"
     ],
     "settings": {
-      "foreground": "$neon.green",
+      "foreground": "$pair.mint",
       "fontStyle": "regular"
     }
   },
@@ -218,7 +249,7 @@
       "string.unquoted.plain.in.homeassistant"
     ],
     "settings": {
-      "foreground": "$neon.mint",
+      "foreground": "$neon.green",
       "fontStyle": "regular"
     }
   },
@@ -229,7 +260,7 @@
       "string.unquoted.block.homeassistant"
     ],
     "settings": {
-      "foreground": "$off-white",
+      "foreground": "$neon.teal",
       "fontStyle": "regular"
     }
   },
@@ -244,15 +275,24 @@
       "constant.numeric.float.homeassistant"
     ],
     "settings": {
-      "foreground": "$purple",
+      "foreground": "$neon.orange",
       "fontStyle": "regular"
+    }
+  },
+  {
+    "name": "Home Assistant - Comment Line Number Sign (#)",
+    "scope": [
+      "comment.line.number-sign.home-assistant",
+      "comment.line.number-sign.homeassistant"
+    ],
+    "settings": {
+      "foreground": "$text.comment",
+      "fontStyle": "bold"
     }
   },
   {
     "name": "Home Assistant - Comments",
     "scope": [
-      "comment.line.number-sign.home-assistant",
-      "comment.line.number-sign.homeassistant",
       "punctuation.definition.comment.home-assistant",
       "punctuation.definition.comment.homeassistant"
     ],
@@ -262,28 +302,45 @@
     }
   },
   {
-    "name": "Home Assistant - YAML Anchors & Aliases",
+    "name": "Home Assistant - YAML Anchors",
     "scope": [
       "entity.name.type.anchor.home-assistant",
-      "entity.name.type.anchor.homeassistant",
-      "variable.other.alias.home-assistant",
-      "variable.other.alias.homeassistant"
+      "entity.name.type.anchor.homeassistant"
     ],
     "settings": {
-      "foreground": "$lavender",
+      "foreground": "$neon.red",
       "fontStyle": "regular"
     }
   },
   {
-    "name": "Home Assistant - Punctuation (colons, dashes)",
+    "name": "Home Assistant - YAML Aliases",
+    "scope": [
+      "variable.other.alias.home-assistant",
+      "variable.other.alias.homeassistant"
+    ],
+    "settings": {
+      "foreground": "$neon.magenta",
+      "fontStyle": "regular"
+    }
+  },
+  {
+    "name": "Home Assistant - Key Value Separator (colon)",
     "scope": [
       "punctuation.separator.key-value.home-assistant",
-      "punctuation.separator.key-value.homeassistant",
+      "punctuation.separator.key-value.homeassistant"
+    ],
+    "settings": {
+      "foreground": "$pair.cyan",
+      "fontStyle": "regular"
+    }
+  },  {
+    "name": "Home Assistant - Punctuation definition for sequence item (dash)",
+    "scope": [
       "punctuation.definition.sequence.item.home-assistant",
       "punctuation.definition.sequence.item.homeassistant"
     ],
     "settings": {
-      "foreground": "$violet",
+      "foreground": "$pair.teal",
       "fontStyle": "regular"
     }
   },
@@ -294,7 +351,7 @@
       "entity.name.tag.home-assistant"
     ],
     "settings": {
-      "foreground": "$neon.teal",
+      "foreground": "$pair.orange",
       "fontStyle": "regular"
     }
   },
@@ -305,7 +362,7 @@
       "keyword.other.card-mod-key.home-assistant"
     ],
     "settings": {
-      "foreground": "$neon.pink",
+      "foreground": "$neon.orange",
       "fontStyle": "bold"
     }
   },
@@ -327,7 +384,7 @@
       "entity.name.tag.css.ha-element.home-assistant"
     ],
     "settings": {
-      "foreground": "$neon.mint",
+      "foreground": "$pair.yellow",
       "fontStyle": "regular"
     }
   },
@@ -338,7 +395,7 @@
       "variable.other.custom-property.ha.home-assistant"
     ],
     "settings": {
-      "foreground": "$purple",
+      "foreground": "$neon.yellow",
       "fontStyle": "regular"
     }
   },
@@ -360,7 +417,7 @@
       "punctuation.section.property-list.css.home-assistant"
     ],
     "settings": {
-      "foreground": "$neon.pink",
+      "foreground": "$neon.cyan",
       "fontStyle": "regular"
     }
   },
@@ -371,7 +428,7 @@
       "entity.other.pseudo-class.ha.home-assistant"
     ],
     "settings": {
-      "foreground": "$lavender",
+      "foreground": "$pair.teal",
       "fontStyle": "regular"
     }
   },
@@ -382,7 +439,7 @@
       "keyword.other.custom-prefix.home-assistant"
     ],
     "settings": {
-      "foreground": "$text.bright",
+      "foreground": "$neon.cyan",
       "fontStyle": "regular"
     }
   },
@@ -393,7 +450,7 @@
       "punctuation.separator.custom-type.home-assistant"
     ],
     "settings": {
-      "foreground": "$neon.red",
+      "foreground": "$pair.mint",
       "fontStyle": "regular"
     }
   },
@@ -404,7 +461,7 @@
       "entity.name.type.custom-card.home-assistant"
     ],
     "settings": {
-      "foreground": "$neon.green"
+      "foreground": "$pair.blue"
     }
   }
 ]

@@ -1,28 +1,60 @@
 {
-    "//": "Colour palette — single source of truth for theme colours. Parts files reference these as $token or $token@AA (alpha suffix). Keys starting with // are ignored by the resolver. Values are descriptive of the current theme; standardise here.",
-    "//syntax": "— core neon syntax colours (see tokens-ha.json) —",
-    "neon.blue": "#00b4ff",
-    "neon.yellow": "#ffff00",
-    "neon.magenta": "#ff00ff",
-    "neon.pink": "#fc49ab",
-    "neon.green": "#00ff51",
-    "neon.orange": "#ff9500",
-    "neon.red": "#ff0000",
-    "neon.mint": "#00ffe7",
-    "neon.teal": "#5fe8ff",
-    "neon.amber": "#ffe600",
-    "purple": "#c792ea",
-    "lavender": "#bbadff",
-    "violet": "#881a94",
-    "//ui": "— UI accent and text —",
-    "accent.pink": "#fc49ab",
-    "text.body": "#cfd8dc",
-    "text.bright": "#e8e8f0",
-    "text.ui": "#cccccc",
-    "text.comment": "#929292",
-    "off-white": "#fafafa",
-    "white": "#ffffff",
-    "black": "#000000",
-    "//surfaces": "— backgrounds —",
-    "bg.editor": "#0f0f0f"
+    "// syntax": "Neon colors and their vivid complements — alternating pairs",
+    "neon.red":     "#FF3131",
+    "pair.red":     "#00DDFF",
+
+    "neon.orange":  "#FF5C00",
+    "pair.orange":  "#0088FF",
+
+    "neon.amber":   "#FDFD3D",
+    "pair.amber":   "#9955FF",
+
+    "neon.yellow":  "#CCFF00",
+    "pair.yellow":  "#BB44FF",
+
+    "neon.green":   "#39FF14",
+    "pair.green":   "#CC44FF",
+
+    "neon.mint":    "#00FF9F",
+    "pair.mint":    "#FF0077",
+
+    "neon.cyan":    "#00FFFF",
+    "pair.cyan":    "#FF3300",
+
+    "neon.teal":    "#5FE8FF",
+    "pair.teal":    "#FF5500",
+
+    "neon.blue":    "#1A7FFF",
+    "pair.blue":    "#FFAA00",
+
+    "neon.magenta": "#B026FF",
+    "pair.magenta": "#88FF00",
+
+    "neon.pink":    "#FF1493",
+    "pair.pink":    "#00FF66",
+
+    "// contrasts": "Dark hue-opposites — for backgrounds and highlights",
+    "contrast.red":     "#001A1A",
+    "contrast.orange":  "#001635",
+    "contrast.amber":   "#060025",
+    "contrast.yellow":  "#0D0030",
+    "contrast.green":   "#1A0040",
+    "contrast.mint":    "#1A0018",
+    "contrast.cyan":    "#1A0000",
+    "contrast.teal":    "#1E0500",
+    "contrast.blue":    "#1C0E00",
+    "contrast.magenta": "#102000",
+    "contrast.pink":    "#002211",
+
+    "// text": "Normal text — not part of syntax highlighting",
+    "text.body":    "#CFD8DC",
+    "text.bright":  "#E8E8F0",
+    "text.ui":      "#CCCCCC",
+    "text.comment": "#737C75",
+    "off-white":    "#FAFAFA",
+    "standard.white": "#FFFFFF",
+    "standard.black": "#000000",
+
+    "// surfaces": "",
+    "bg.editor": "#0F0F0F"
 }
