@@ -5,7 +5,7 @@ import * as vscode from "vscode";
 suite("Automation Trigger Issue #3623", () => {
   suiteSetup(async () => {
     // Activate the extension
-    await vscode.extensions.getExtension("keesschollaart.home-assistant-vscode")?.activate();
+    await vscode.extensions.getExtension("JaseOnline.home-assistant-vscode")?.activate();
     
     vscode.window.showInformationMessage("Starting automation trigger issue #3623 tests...");
   });

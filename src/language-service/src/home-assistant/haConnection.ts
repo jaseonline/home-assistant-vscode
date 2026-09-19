@@ -1272,7 +1272,7 @@ export class HaConnection implements IHaConnection {
     if (!this.connection) {
       return "Not connected to Home Assistant";
     }
-    type LogEntry = {
+    interface LogEntry {
       name: string;
       message: string[];
       level: string;
@@ -1281,7 +1281,7 @@ export class HaConnection implements IHaConnection {
       exception: string;
       count: number;
       first_occurred: number;
-    };
+    }
     const entries = await this.connection.sendMessagePromise<LogEntry[]>({
       type: "system_log/list",
     });
@@ -1326,7 +1326,7 @@ export class HaConnection implements IHaConnection {
       if (error.response) {
         // The request was made and the server responded with a status code outside of 2xx range
         console.error(`Response status: ${error.response.status}`);
-        console.error(`Response data:`, error.response.data);
+        console.error("Response data:", error.response.data);
         
         // Return the error data to allow the caller to handle it
         return error.response.data;

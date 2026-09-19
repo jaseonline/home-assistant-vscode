@@ -1,10 +1,7 @@
 [
   {
     "name": "Comments (general)",
-    "scope": [
-      "comment",
-      "punctuation.definition.comment"
-    ],
+    "scope": ["comment", "punctuation.definition.comment"],
     "settings": {
       "foreground": "$text.comment",
       "fontStyle": "italic"
@@ -12,38 +9,28 @@
   },
   {
     "name": "Strings (general)",
-    "scope": [
-      "string"
-    ],
+    "scope": ["string"],
     "settings": {
       "foreground": "$neon.amber"
     }
   },
   {
     "name": "Numbers (general)",
-    "scope": [
-      "constant.numeric"
-    ],
+    "scope": ["constant.numeric"],
     "settings": {
       "foreground": "$pair.amber"
     }
   },
   {
     "name": "Constants (general)",
-    "scope": [
-      "constant.language"
-    ],
+    "scope": ["constant.language"],
     "settings": {
       "foreground": "$neon.green"
     }
   },
   {
     "name": "Keywords",
-    "scope": [
-      "keyword",
-      "storage.modifier",
-      "storage.type"
-    ],
+    "scope": ["keyword", "storage.modifier", "storage.type"],
     "settings": {
       "foreground": "$neon.pink",
       "fontStyle": "bold"
@@ -51,92 +38,70 @@
   },
   {
     "name": "Functions",
-    "scope": [
-      "entity.name.function",
-      "support.function"
-    ],
+    "scope": ["entity.name.function", "support.function"],
     "settings": {
       "foreground": "$neon.orange"
     }
   },
   {
     "name": "Support Classes",
-    "scope": [
-      "support.class"
-    ],
+    "scope": ["support.class"],
     "settings": {
       "foreground": "$neon.magenta"
     }
   },
   {
     "name": "Entity Name Type",
-    "scope": [
-      "entity.name.type"
-    ],
+    "scope": ["entity.name.type"],
     "settings": {
       "foreground": "$neon.magenta"
     }
   },
   {
     "name": "Entity Name Class",
-    "scope": [
-      "entity.name.class"
-    ],
+    "scope": ["entity.name.class"],
     "settings": {
       "foreground": "$neon.magenta"
     }
   },
   {
     "name": "Entity Name Namespace",
-    "scope": [
-      "entity.name.namespace"
-    ],
+    "scope": ["entity.name.namespace"],
     "settings": {
       "foreground": "$neon.magenta"
     }
   },
   {
     "name": "Variables",
-    "scope": [
-      "variable"
-    ],
+    "scope": ["variable"],
     "settings": {
       "foreground": "$neon.mint"
     }
   },
   {
     "name": "HTML/XML Tags",
-    "scope": [
-      "entity.name.tag"
-    ],
+    "scope": ["entity.name.tag"],
     "settings": {
       "foreground": "$neon.blue"
     }
   },
   {
     "name": "HTML/XML Attributes",
-    "scope": [
-      "entity.other.attribute-name"
-    ],
+    "scope": ["entity.other.attribute-name"],
     "settings": {
       "foreground": "$neon.amber"
     }
   },
   {
     "name": "Property Names",
-    "scope": [
-      "support.type.property-name"
-    ],
+    "scope": ["support.type.property-name"],
     "settings": {
       "foreground": "$neon.amber"
     }
   },
   {
     "name": "Curly Brace",
-    "scope": [
-      "punctuation.curlybrace.open",
-      "punctuation.curlybrace.close"
-    ],
+    "scope": ["punctuation.curlybrace.open", "punctuation.curlybrace.close"],
     "settings": {
       "foreground": "$neon.orange"
     }
@@ -153,37 +118,28 @@
   },
   {
     "name": "Parenthesis",
-    "scope": [
-      "punctuation.parenthesis.begin",
-      "punctuation.parenthesis.end"
-    ],
+    "scope": ["punctuation.parenthesis.begin", "punctuation.parenthesis.end"],
     "settings": {
       "foreground": "$neon.blue"
     }
   },
   {
     "name": "Curly Brace",
-    "scope": [
-      "meta.brace.curly"
-    ],
+    "scope": ["meta.brace.curly"],
     "settings": {
       "foreground": "$neon.amber"
     }
   },
   {
     "name": "Square Brace",
-    "scope": [
-      "meta.brace.square"
-    ],
+    "scope": ["meta.brace.square"],
     "settings": {
       "foreground": "$neon.pink"
     }
   },
   {
     "name": "Parenthesis",
-    "scope": [
-      "meta.brace.round"
-    ],
+    "scope": ["meta.brace.round"],
     "settings": {
       "foreground": "$neon.blue"
     }
@@ -210,54 +166,42 @@
   },
   {
     "name": "Definition Bracket",
-    "scope": [
-      "punctuation.definition.bracket"
-    ],
+    "scope": ["punctuation.definition.bracket"],
     "settings": {
       "foreground": "$neon.mint"
     }
   },
   {
     "name": "Punctuation (general)",
-    "scope": [
-      "punctuation"
-    ],
+    "scope": ["punctuation"],
     "settings": {
       "foreground": "$text.bright"
     }
   },
   {
     "name": "Operators (general)",
-    "scope": [
-      "keyword.operator"
-    ],
+    "scope": ["keyword.operator"],
     "settings": {
       "foreground": "$neon.amber"
     }
   },
   {
     "name": "Escape Characters",
-    "scope": [
-      "constant.character.escape"
-    ],
+    "scope": ["constant.character.escape"],
     "settings": {
       "foreground": "$neon.green"
     }
   },
   {
     "name": "Python - Magic Variables",
-    "scope": [
-      "support.variable.magic.python"
-    ],
+    "scope": ["support.variable.magic.python"],
     "settings": {
       "foreground": "$pair.magenta"
     }
   },
   {
     "name": "Python - Self Parameter",
-    "scope": [
-      "variable.parameter.function.language.special.self.python"
-    ],
+    "scope": ["variable.parameter.function.language.special.self.python"],
     "settings": {
       "foreground": "$neon.mint"
     }
@@ -276,9 +220,7 @@
   },
   {
     "name": "JavaScript - This",
-    "scope": [
-      "variable.language.this"
-    ],
+    "scope": ["variable.language.this"],
     "settings": {
       "foreground": "$neon.pink",
       "fontStyle": "bold"
@@ -286,9 +228,7 @@
   },
   {
     "name": "JavaScript - Function Calls",
-    "scope": [
-      "meta.function-call"
-    ],
+    "scope": ["meta.function-call"],
     "settings": {
       "foreground": "$neon.orange"
     }
@@ -306,18 +246,14 @@
   },
   {
     "name": "Jinja2 - Template Variables",
-    "scope": [
-      "variable.other.jinja"
-    ],
+    "scope": ["variable.other.jinja"],
     "settings": {
       "foreground": "$neon.magenta"
     }
   },
   {
     "name": "Jinja2 - Template Keywords",
-    "scope": [
-      "keyword.control.jinja"
-    ],
+    "scope": ["keyword.control.jinja"],
     "settings": {
       "foreground": "$neon.pink",
       "fontStyle": "bold"
@@ -325,18 +261,14 @@
   },
   {
     "name": "RegExp - Character Class",
-    "scope": [
-      "constant.other.character-class.regexp"
-    ],
+    "scope": ["constant.other.character-class.regexp"],
     "settings": {
       "foreground": "$neon.green"
     }
   },
   {
     "name": "RegExp - Quantifier",
-    "scope": [
-      "keyword.operator.quantifier.regexp"
-    ],
+    "scope": ["keyword.operator.quantifier.regexp"],
     "settings": {
       "foreground": "$neon.orange"
     }
@@ -353,9 +285,7 @@
   },
   {
     "name": "Markdown - Headings",
-    "scope": [
-      "markup.heading"
-    ],
+    "scope": ["markup.heading"],
     "settings": {
       "foreground": "$neon.blue",
       "fontStyle": "bold"
@@ -363,9 +293,7 @@
   },
   {
     "name": "Markdown - Bold",
-    "scope": [
-      "markup.bold"
-    ],
+    "scope": ["markup.bold"],
     "settings": {
       "foreground": "$text.bright",
       "fontStyle": "bold"
@@ -373,9 +301,7 @@
   },
   {
     "name": "Markdown - Italic",
-    "scope": [
-      "markup.italic"
-    ],
+    "scope": ["markup.italic"],
     "settings": {
       "foreground": "$text.bright",
       "fontStyle": "italic"
@@ -383,65 +309,49 @@
   },
   {
     "name": "Markdown - Code",
-    "scope": [
-      "markup.inline.raw"
-    ],
+    "scope": ["markup.inline.raw"],
     "settings": {
       "foreground": "$neon.teal"
     }
   },
   {
     "name": "JSON - Property Keys",
-    "scope": [
-      "support.type.property-name.json"
-    ],
+    "scope": ["support.type.property-name.json"],
     "settings": {
       "foreground": "$neon.blue"
     }
   },
   {
     "name": "YAML - Keys",
-    "scope": [
-      "entity.name.tag.yaml"
-    ],
+    "scope": ["entity.name.tag.yaml"],
     "settings": {
       "foreground": "$neon.blue"
     }
   },
   {
     "name": "YAML - Anchors",
-    "scope": [
-      "entity.name.type.anchor.yaml",
-      "variable.other.alias.yaml"
-    ],
+    "scope": ["entity.name.type.anchor.yaml", "variable.other.alias.yaml"],
     "settings": {
       "foreground": "$neon.red"
     }
   },
   {
     "name": "CSS - Selectors",
-    "scope": [
-      "entity.name.tag.css",
-      "entity.other.attribute-name.class.css"
-    ],
+    "scope": ["entity.name.tag.css", "entity.other.attribute-name.class.css"],
     "settings": {
       "foreground": "$neon.blue"
     }
   },
   {
     "name": "CSS - Properties",
-    "scope": [
-      "support.type.property-name.css"
-    ],
+    "scope": ["support.type.property-name.css"],
     "settings": {
       "foreground": "$neon.amber"
     }
   },
   {
     "name": "CSS - Values",
-    "scope": [
-      "support.constant.property-value.css"
-    ],
+    "scope": ["support.constant.property-value.css"],
     "settings": {
       "foreground": "$neon.mint"
     }

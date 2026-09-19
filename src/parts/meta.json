@@ -1,6 +1,6 @@
 {
-    "$schema": "vscode://schemas/color-theme",
-    "name": "HA Neon Dark",
-    "type": "dark",
-    "semanticHighlighting": true
+  "$schema": "vscode://schemas/color-theme",
+  "name": "HA Neon Dark",
+  "type": "dark",
+  "semanticHighlighting": true
 }

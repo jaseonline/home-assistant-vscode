@@ -10,7 +10,7 @@ suite("Entity Validation", () => {
     workspacePath = vscode.workspace.workspaceFolders?.[0].uri.fsPath || "";
     
     // Activate the extension
-    await vscode.extensions.getExtension("keesschollaart.home-assistant-vscode")?.activate();
+    await vscode.extensions.getExtension("JaseOnline.home-assistant-vscode")?.activate();
     
     vscode.window.showInformationMessage("Starting entity validation tests...");
   });

@@ -99,11 +99,19 @@ const theme = {
     semanticTokenColors: semantic,
 };
 
-const output = JSON.stringify(theme, null, 4) + "\n";
-fs.writeFileSync(outFile, output, "utf8");
+const prettier = require("prettier");
 
-const rel = path.relative(root, outFile);
-const tokenCount = theme.tokenColors.length;
-console.log(
-    `✓ Theme assembled → ${rel}  (${tokenCount} token rules: ${tokensHa.length} HA, ${tokensGeneral.length} general; ${resolvedCount} palette refs resolved from ${Object.keys(palette).length} tokens)`
-);
+(async () => {
+    const raw = JSON.stringify(theme, null, 2) + "\n";
+    // Format through prettier so the committed output always matches what
+    // `npm run lint` checks for, instead of drifting from prettier's own rules
+    // (e.g. collapsing short arrays onto one line).
+    const output = await prettier.format(raw, { parser: "json", filepath: outFile });
+    fs.writeFileSync(outFile, output, "utf8");
+
+    const rel = path.relative(root, outFile);
+    const tokenCount = theme.tokenColors.length;
+    console.log(
+        `✓ Theme assembled → ${rel}  (${tokenCount} token rules: ${tokensHa.length} HA, ${tokensGeneral.length} general; ${resolvedCount} palette refs resolved from ${Object.keys(palette).length} tokens)`
+    );
+})();

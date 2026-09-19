@@ -16,13 +16,25 @@ try {
   const gitignoreContent = readFileSync(`${__dirname}/.gitignore`, "utf8");
   ignores = gitignoreContent
     .split("\n")
-    .filter(line => line.trim() !== "" && !line.startsWith("//"))
-    .map(pattern => pattern.startsWith("!") ? pattern : `!${pattern}`);
+    .map(line => line.trim())
+    .filter(line => line !== "" && !line.startsWith("#"))
+    .flatMap(pattern => {
+      const trimmed = pattern.replace(/\/$/, "");
+      // A pattern with no slash matches at any depth (gitignore semantics);
+      // one with a slash is relative to the repo root.
+      const base = trimmed.includes("/") ? trimmed : `**/${trimmed}`;
+      // Also match everything underneath, in case the pattern names a directory.
+      return [base, `${base}/**`];
+    });
 } catch {
   // Could not read .gitignore file, ignores will not be set
 }
 
 export default tseslint.config(
+  // Global ignores: must stand alone (no other keys) to exclude files from all configs below.
+  {
+    ignores: ["**/node_modules/**", "**/out/**", ...ignores],
+  },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   ...tseslint.configs.stylistic,
@@ -38,18 +50,16 @@ export default tseslint.config(
     rules: {
       // Base rules
       "curly": "warn",
-      
+
       // TypeScript rules
       "@typescript-eslint/no-explicit-any": 0,
       "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
       "@typescript-eslint/consistent-indexed-object-style": 0, // Allow index signatures
-      
+
       // Stylistic rules
       "@stylistic/semi": ["warn", "always"],
       "@stylistic/quotes": ["warn", "double"],
       "@stylistic/indent": ["warn", 2],
     },
-    // Ignore files that match patterns in .gitignore
-    ignores: ["**/node_modules/**", "**/out/**", ...ignores],
   },
 );

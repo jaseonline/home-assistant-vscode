@@ -791,7 +791,7 @@
     "bundle": "node scripts/bundle.js",
     "bundle:watch": "node scripts/bundle.js --watch",
     "bundle:production": "node scripts/bundle.js --production",
-    "compile": "node scripts/build-theme.js && tsc -p src/language-service/tsconfig.json && ts-node src/language-service/src/schemas/generateSchemas.ts --quick && node scripts/bundle.js",
+    "compile": "node scripts/build-theme.js && tsc -p src/language-service/tsconfig.json && ts-node src/language-service/src/schemas/generateSchemas.ts --quick && tsc && node scripts/bundle.js",
     "format:eslint": "eslint \"**/src/**/*.ts\" --fix",
     "format:prettier": "prettier \"**/src/**/*.json\" --write",
     "format": "npm run format:eslint && npm run format:prettier",

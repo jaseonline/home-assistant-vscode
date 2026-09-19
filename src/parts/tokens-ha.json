@@ -102,10 +102,7 @@
   },
   {
     "name": "Home Assistant - Keywords (other)",
-    "scope": [
-      "keyword.other.home-assistant",
-      "keyword.other.homeassistant"
-    ],
+    "scope": ["keyword.other.home-assistant", "keyword.other.homeassistant"],
     "settings": {
       "foreground": "$neon.pink",
       "fontStyle": "regular"
@@ -124,10 +121,7 @@
   },
   {
     "name": "Home Assistant - Keywords (type)",
-    "scope": [
-      "storage.type.home-assistant",
-      "storage.type.homeassistant"
-    ],
+    "scope": ["storage.type.home-assistant", "storage.type.homeassistant"],
     "settings": {
       "foreground": "$neon.yellow",
       "fontStyle": "regular"
@@ -333,7 +327,8 @@
       "foreground": "$pair.cyan",
       "fontStyle": "regular"
     }
-  },  {
+  },
+  {
     "name": "Home Assistant - Punctuation definition for sequence item (dash)",
     "scope": [
       "punctuation.definition.sequence.item.home-assistant",
