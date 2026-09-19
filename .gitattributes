@@ -1,0 +1,10 @@
+# Normalize line endings for all text files in the repository to LF,
+# regardless of a contributor's core.autocrlf setting, so files don't
+# flip between LF/CRLF and show up as spuriously "modified".
+* text=auto eol=lf
+
+# Binary files — never touch line endings.
+*.png binary
+*.gif binary
+*.svg binary
+*.vsix binary
