@@ -39,3 +39,5 @@ selfIdentity.plist
 # Stray logs (incl. iPhone syslogs) — never package
 **/*.log
 color-audit.md
+# Claude session memory — never package
+.remember/**
