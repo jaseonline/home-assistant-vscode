@@ -2,7 +2,7 @@
   "name": "home-assistant-vscode",
   "displayName": "Home Assistant Config Helper",
   "description": "Home Assistant Configuration Helper",
-  "version": "1.1.19",
+  "version": "1.1.20",
   "preview": false,
   "engines": {
     "vscode": "^1.99.0"
@@ -66,8 +66,8 @@
           },
           "home-assistant-vscode.schemaValidation": {
             "type": "boolean",
-            "default": false,
-            "description": "Report Home Assistant schema validation findings (unknown or misplaced keys) as problems. Off by default because the bundled schemas lag behind current Home Assistant syntax and produce false errors. YAML syntax errors and entity/area/device checks are always reported. Schemas are still used for completion and hover."
+            "default": true,
+            "description": "Report Home Assistant schema findings as problems: unknown or misplaced keys as warnings, legacy syntax (e.g. platform: instead of trigger:) as information. Turn off if the bundled schemas lag behind a newer Home Assistant feature you use. YAML syntax errors and entity/area/device checks are always reported. Schemas are still used for completion and hover."
           }
         }
       }
@@ -806,7 +806,7 @@
     "bundle": "node scripts/bundle.js",
     "bundle:watch": "node scripts/bundle.js --watch",
     "bundle:production": "node scripts/bundle.js --production",
-    "compile": "node scripts/build-theme.js && tsc -p src/language-service/tsconfig.json && ts-node src/language-service/src/schemas/generateSchemas.ts --quick && tsc && node scripts/bundle.js",
+    "compile": "node scripts/build-theme.js && ts-node src/language-service/src/schemas/generateSchemas.ts --quick && tsc -p src/language-service/tsconfig.json && tsc && node scripts/bundle.js",
     "format:eslint": "eslint \"**/src/**/*.ts\" --fix",
     "format:prettier": "prettier \"**/src/**/*.json\" --write",
     "format": "npm run format:eslint && npm run format:prettier",

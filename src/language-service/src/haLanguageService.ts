@@ -236,11 +236,18 @@ export class HomeAssistantLanguageService {
 
       // Schema findings are opt-in (home-assistant-vscode.schemaValidation);
       // YAML syntax errors (source "YAML") are always reported
-      if (`${diagnosticItem.source}`.startsWith("yaml-schema") && !this.configurationService.schemaValidation) {
+      const isSchemaFinding = `${diagnosticItem.source}`.startsWith("yaml-schema");
+      if (isSchemaFinding && !this.configurationService.schemaValidation) {
         continue;
       }
 
-      diagnosticItem.severity = 1; // Convert all warnings to errors
+      if (!isSchemaFinding) {
+        diagnosticItem.severity = 1; // YAML syntax problems are errors
+      } else if (diagnosticItem.message.startsWith("Legacy syntax")) {
+        diagnosticItem.severity = 3; // Information: still accepted by Home Assistant
+      } else {
+        diagnosticItem.severity = 2; // Warning: the schemas can lag behind Home Assistant
+      }
       diagnostics.push(diagnosticItem);
     }
 

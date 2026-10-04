@@ -22,6 +22,7 @@ import {
   LegacySyntax,
 } from "../types";
 
+import { Weekday } from "./conditions";
 import { WebOSTvTrigger } from "./core/webostv";
 import { KnxTelegramTrigger } from "./core/knx";
 
@@ -793,6 +794,12 @@ interface TimeTrigger {
    * @items.pattern ^((input_datetime|sensor)\.(?!_)[\da-z_]+(?<!_)|(?:[01]\d|2[0123]):(?:[012345]\d)(:(?:[012345]\d))?)$
    */
   at: Times | InputDatetimeEntities | SensorEntities | SensorEntityOffsetOrList;
+
+  /**
+   * Only trigger on these days of the week.
+   * https://www.home-assistant.io/docs/automation/trigger/#weekday-filtering
+   */
+  weekday?: Weekday | Weekday[];
 
   /**
    * An personal identifier for this trigger, that is passed into the trigger

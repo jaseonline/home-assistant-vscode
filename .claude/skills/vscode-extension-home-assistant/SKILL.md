@@ -230,38 +230,28 @@ Do not suppress these by altering schema types.
 | Track | Status | Description |
 |---|---|---|
 | Track 2 | ✅ Complete | HA entity ID / service call / custom card injection grammar — done |
-| Track 3 | In progress | Schema staleness fixes in `src/language-service/src/schemas/` — see detail below |
+| Track 3 | Mostly done (1.1.20) | Schema generator fix + staleness fixes in `src/language-service/src/schemas/` — see detail below |
 
-### Track 3 — Schema Staleness (In Progress)
+### Track 3 — Schemas (mostly done in 1.1.20)
 
-**hass-json-schema verdict:** `home-assistant-json-schema` (not currently cloned locally; was under `C:\Dev\projects\personal\`) is a **schema mirror, not a generator**. It re-hosts the JSON files that `generateSchemas.ts` already produces for non-VSCode editors. The Nix flake is just CI deployment tooling. There is no mechanism to auto-generate schemas from HA Python source — Track 3 means hand-fixing the TypeScript type files in `src/language-service/src/schemas/`. The naming bug (e.g. `integration-light.json` contains automation schema) exists in both the mirror and the extension's own `src/language-service/src/schemas/json/` — they are identical copies.
+**How schemas are built:** TypeScript types in `src/language-service/src/schemas/` → `typescript-json-schema` (`noExtraProps`: undeclared keys are errors) → `schemas/json/*.json` (git-ignored, generated) → `tsc` copies to `dist/` → `bundle.js` copies to `out/server/json`. `mappings.json` maps a config path (e.g. `configuration.yaml/script`) to a TS file + type. Regenerate with `npm run schema` (~35 s); `compile --quick` regenerates automatically when any schema source is newer than the generated JSON.
 
-**Staleness diff against HA `dev` branch (as of Track 3 session):**
+**The "naming bug" was a generator bug (fixed 1.1.20):** 23 mappings use a type named `File`, and `TJS.generateSchema(program, "File")` picked whichever `File` it met first among imported modules — 11 schemas (script, sensor, binary_sensor, light, switch, cover, fan, lock, vacuum, weather, alarm_control_panel) were the automation schema. `generateSchemaFromOwnFile` now uses `uniqueNames` and picks the symbol declared in the mapping's own file. A unit test guards it.
 
-Functional gaps — fix these (cause false errors or missing completions):
-- `set_conversation_response` action — was entirely absent from `actions.ts` → **fixed this session** (added `SetConversationResponseAction` interface and added to `Action` union)
+**Schemas never applied on a mapped drive until 1.1.19** (realpath → UNC path). Findings: unknown/misplaced keys = Warning, legacy syntax (`platform:`, `service:`) = Information with a readable `patternErrorMessage`, YAML syntax = Error. Setting `home-assistant-vscode.schemaValidation` (default on since 1.1.20).
+
+**hass-json-schema (sr.ht):** a mirror that re-hosts this generator's JSON for other editors — it carried the same 11 wrong schemas. Not a source of fixes; fixes go in the TypeScript here.
+
+**Hand-edit pattern:** find the TS type (via `mappings.json`) → add/relax the property or add an interface to a union → `npm run schema` → validate real files (see the sweep approach in the 1.1.20 session: discover config, `findAndApplySchemas`, `getDiagnostics` with `schemaValidation: true`).
+
+**Done:** `set_conversation_response` action; purpose-specific conditions (`TargetCondition`: `condition: light.is_on` + `target`/`options`); `weekday` on time trigger; `Time` accepts HH:MM; scene attributes accept null.
+
+**Real-config sweep after 1.1.20:** 0 schema findings in Jason's own files except 6 legacy `platform:` notices in automations.yaml (Evening Lights, Front Door reset, Host Reboot). Third-party blueprints: legacy notices + 2 follow-on warnings.
+
+**Remaining gaps:**
 - 6 missing selectors in `selectors.ts`: `app`, `serial_port`, `statistic`, `numeric_threshold`, `choose`, `automation_behavior`
-
-Up to date — no action needed:
-- All 17 trigger types correct, including `platform` → `trigger` rename with legacy fallback
-- `StateTrigger` has `not_from` / `not_to`
-- `ServiceAction.target` has `floor_id` and `label_id`
-- `color_temp` (mireds) correctly absent from service call schema since HA 2026.3
-
-Deprecation drift — low urgency (old names still work in HA, no false errors):
-- Template `LightItem` missing `color_temp_kelvin`, `min_color_temp_kelvin`, `max_color_temp_kelvin` as alternatives
-
-**Work done in Track 3 session:**
-- Added `SetConversationResponseAction` interface to `actions.ts` (after `StopAction`)
-- Added it to the `Action` union type
-- Started `npx ts-node src/language-service/src/schemas/generateSchemas.ts` — MCP timed out before completion (expected; step takes several minutes)
-
-**Next steps when resuming Track 3:**
-1. Check if `generateSchemas` completed: tail `generate-schemas.log`; confirm `set_conversation_response` appears in `src/language-service/dist/schemas/json/integration-automation.json`
-2. Rebuild and install: `.\build.ps1 -Install`
-3. Developer: Reload Window
-4. Test: verify `set_conversation_response:` gets completion and no squiggle in an automation
-5. Next gap: add the 6 missing selectors to `selectors.ts`
+- Template `LightItem` missing `color_temp_kelvin`, `min_color_temp_kelvin`, `max_color_temp_kelvin`
+- Legacy syntax on one trigger cascades into misleading "closest branch" errors (e.g. `Value must be "webostv.turn_on"`) — yaml-language-server anyOf reporting
 
 ---
 

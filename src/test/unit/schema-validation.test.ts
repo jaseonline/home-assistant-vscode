@@ -21,7 +21,7 @@ async function schemaDiagnostics(
   target: string,
   beforeApply?: (dir: string) => void,
   schemaValidation = true,
-): Promise<{ line: number; message: string; source: string }[]> {
+): Promise<{ line: number; message: string; source: string; severity: number | undefined }[]> {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ha-schema-"));
   try {
     for (const [name, content] of Object.entries(files)) {
@@ -50,7 +50,7 @@ async function schemaDiagnostics(
     // Only YAML/schema diagnostics; reference checks are covered elsewhere
     return diagnostics
       .filter((d) => d.source !== "home-assistant")
-      .map((d) => ({ line: d.range.start.line, message: d.message, source: `${d.source}` }));
+      .map((d) => ({ line: d.range.start.line, message: d.message, source: `${d.source}`, severity: d.severity }));
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
@@ -108,10 +108,9 @@ suite("Schema validation (included files)", function () {
     );
   });
 
-  // Note: a *valid* scripts.yaml is not asserted clean - the bundled script
-  // schema currently rejects every script key, which is why schema findings
-  // are opt-in (home-assistant-vscode.schemaValidation, default off).
-  test("a misspelled script key is reported", async () => {
+  test("a valid scripts.yaml is clean; a misspelled script key is reported", async () => {
+    // Until 1.1.20 the script schema was generated from automation.ts's `File`
+    // type and rejected every script; see generateSchemas.ts
     const valid = `valid_script:
   alias: Valid Script
   sequence:
@@ -119,12 +118,116 @@ suite("Schema validation (included files)", function () {
       target:
         entity_id: light.kitchen
 `;
+    assert.deepStrictEqual(await schemaDiagnostics(scripts(valid), "scripts.yaml"), []);
+
     const found = await schemaDiagnostics(scripts(`${valid}invalid_script:
   alias: Invalid Script
   sequenze:
     - action: light.turn_on
 `), "scripts.yaml");
     assert.ok(found.length > 0, "expected the 'sequenze' typo to produce a schema error");
+  });
+
+  test("purpose-specific conditions (light.is_on with target/options) are accepted", async () => {
+    const found = await schemaDiagnostics(scripts(`refresh:
+  sequence:
+    - repeat:
+        until:
+          - condition: light.is_on
+            target:
+              area_id: main_bedroom
+            options:
+              behavior: any
+        sequence:
+          - delay: 1
+`), "scripts.yaml");
+
+    assert.deepStrictEqual(found, []);
+  });
+
+  test("time trigger weekday and HH:MM times are accepted", async () => {
+    const found = await schemaDiagnostics(automations(`- id: a1
+  alias: Weekday and short times
+  triggers:
+    - trigger: time
+      at: "06:00"
+      weekday:
+        - mon
+        - fri
+  conditions:
+    - condition: time
+      after: "22:00"
+      before: "07:00:00"
+  actions:
+    - action: light.turn_on
+`), "automations.yaml");
+
+    assert.deepStrictEqual(found, []);
+  });
+
+  test("legacy syntax is reported as information with a readable message", async () => {
+    const found = await schemaDiagnostics(automations(`- id: a1
+  alias: Legacy trigger
+  triggers:
+    - platform: time
+      at: "05:45:00"
+  actions:
+    - action: light.turn_on
+`), "automations.yaml");
+
+    assert.ok(found.length > 0, "legacy platform: should be reported");
+    for (const d of found) {
+      assert.ok(d.message.startsWith("Legacy syntax"), d.message);
+      assert.strictEqual(d.severity, 3, "Information, not Error");
+    }
+  });
+
+  test("other schema findings are warnings, not errors", async () => {
+    const found = await schemaDiagnostics(automations(`- id: a1
+  alias: Unknown property
+  triggers:
+    - trigger: state
+      entity_id: binary_sensor.motion
+  actions:
+    - action: light.turn_on
+      unknown_property: something
+`), "automations.yaml");
+
+    assert.ok(found.length > 0);
+    assert.ok(found.every((d) => d.severity === 2), JSON.stringify(found));
+  });
+
+  test("scenes saved by HA with empty (null) attributes are accepted", async () => {
+    const found = await schemaDiagnostics({
+      "configuration.yaml": "scene: !include scenes.yaml\n",
+      "scenes.yaml": `- id: "1"
+  name: Evening
+  entities:
+    light.lamp:
+      state: "on"
+      color_mode: xy
+      brightness: 255
+      color_temp_kelvin:
+      color_temp:
+`,
+    }, "scenes.yaml");
+
+    assert.deepStrictEqual(found, []);
+  });
+
+  test("each integration schema is generated from its own file's type", () => {
+    // Regression for type-name collisions (23 mappings use a type named `File`)
+    const schemasDir = path.join(__dirname, "../../../src/language-service/src/schemas");
+    const mappings: { key: string; file: string }[] = JSON.parse(fs.readFileSync(path.join(schemasDir, "mappings.json"), "utf8"));
+    const wrong = mappings
+      .filter((m) => m.key.startsWith("integration-") && !/automation|homeassistant-packages/.test(m.key))
+      .filter((m) => {
+        const schema = JSON.parse(fs.readFileSync(path.join(schemasDir, "json", m.file), "utf8"));
+        return Object.keys(schema.definitions ?? {}).some((d) => d.startsWith("AutomationItem"));
+      })
+      .map((m) => m.key);
+
+    assert.deepStrictEqual(wrong, []);
   });
 
   test("one unresolvable file does not disable schemas for the others", async () => {

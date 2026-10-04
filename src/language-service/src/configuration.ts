@@ -34,9 +34,9 @@ export class ConfigurationService implements IConfigurationService {
 
   public autoRenderTemplates = true;
 
-  // Off by default: the bundled HA schemas lag behind current HA syntax and
-  // report many false errors (e.g. every script in scripts.yaml)
-  public schemaValidation = false;
+  // Schema findings (unknown/misplaced keys) as warnings, legacy syntax as
+  // information. Was off by default until the schema generator fix in 1.1.20.
+  public schemaValidation = true;
 
   constructor() {
     this.setConfigViaEnvironmentVariables();
@@ -80,7 +80,7 @@ export class ConfigurationService implements IConfigurationService {
       this.ignoreCertificates = !!incoming.ignoreCertificates;
       this.disableAutomaticFileAssociation = !!incoming.disableAutomaticFileAssociation;
       this.autoRenderTemplates = incoming.autoRenderTemplates !== undefined ? !!incoming.autoRenderTemplates : true;
-      this.schemaValidation = !!incoming.schemaValidation;
+      this.schemaValidation = incoming.schemaValidation !== undefined ? !!incoming.schemaValidation : true;
     } else {
       console.warn("Received invalid or empty configuration object");
     }

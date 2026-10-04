@@ -3,7 +3,10 @@
  * Source: https://github.com/home-assistant/core/blob/dev/homeassistant/helpers/config_validation.py
  */
 import {
+  Area,
   DeviceTrackerEntities,
+  Floor,
+  Label,
   DynamicTemplate,
   Entities,
   IncludeList,
@@ -37,10 +40,52 @@ export type Condition =
   | ShorthandCondition
   | StateCondition
   | SunCondition
+  | TargetCondition
   | TemplateCondition
   | TimeCondition
   | TriggerCondition
   | ZoneCondition;
+
+/**
+ * Purpose-specific condition provided by an integration, e.g. `light.is_on`,
+ * evaluated against a target instead of a single entity_id.
+ * https://www.home-assistant.io/docs/scripts/conditions/
+ */
+export interface TargetCondition {
+  /**
+   * Alias for the condition.
+   */
+  alias?: string;
+
+  /**
+   * Every individual condition can be disabled, without removing it.
+   * https://www.home-assistant.io/docs/scripts/conditions/#disabling-a-condition
+   */
+  enabled?: boolean;
+
+  /**
+   * The integration condition to test, as `<domain>.<condition>` (e.g. `light.is_on`).
+   *
+   * @pattern ^[a-z0-9_]+\.[a-z0-9_]+$
+   */
+  condition: string;
+
+  /**
+   * What to evaluate the condition against: entities, devices, areas, floors or labels.
+   */
+  target?: {
+    entity_id?: Entities | Template;
+    device_id?: string | string[] | Template;
+    area_id?: Area | Area[];
+    floor_id?: Floor | Floor[];
+    label_id?: Label | Label[];
+  };
+
+  /**
+   * Condition-specific options, e.g. `behavior: any | all`.
+   */
+  options?: { [key: string]: any };
+}
 
 export interface ShorthandCondition {
   /**

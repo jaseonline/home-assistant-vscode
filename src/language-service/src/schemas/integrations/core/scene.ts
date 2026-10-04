@@ -48,18 +48,20 @@ interface Item {
  * @TJS-additionalProperties true
  */
 export interface ItemEntity {
-  state?: string;
+  // Attributes can be null: scenes saved by HA store attributes that don't
+  // apply to the current colour mode as empty values
+  state?: string | null;
   /**
    * @TSJ-type integer
    * @minimum 0
    * @maximum 255
    */
-  brightness?: number | string;
-  source?: string;
+  brightness?: number | string | null;
+  source?: string | null;
   /**
    * @minimum 1
    */
-  color_temp?: number | string;
+  color_temp?: number | string | null;
   xy_color?: any;
 
   /**

@@ -6,6 +6,19 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.1.20] - 2026-10-04
+
+### Fixed
+
+- 11 of 23 integration schemas were generated from the wrong type: `script`, `sensor`, `binary_sensor`, `light`, `switch`, `cover`, `fan`, `lock`, `vacuum`, `weather` and `alarm_control_panel` all contained the **automation** schema (e.g. every script in `scripts.yaml` was "not allowed"). 23 mappings use a type named `File`, and the generator picked the first `File` it found among imported modules; it now resolves the type declared in the mapping's own file.
+- Schema staleness: purpose-specific conditions (`condition: light.is_on` with `target`/`options`), `weekday` on time triggers, `HH:MM` times in time conditions, and null attributes in HA-saved scenes are accepted.
+- `set_conversation_response` (added to the TypeScript earlier) now reaches the generated schemas.
+- Generated schemas could lag a build behind (copied to `dist` before generation) or go stale on existing checkouts (`--quick` skipped whenever any JSON existed). Generation now runs first, and `--quick` regenerates when a schema source is newer than the output.
+
+### Changed
+
+- `home-assistant-vscode.schemaValidation` is now **on by default**, with graded severities: YAML syntax errors are errors, schema findings are warnings, and legacy syntax (`platform:` → `trigger:`, `service:` → `action:`) is information with a readable message instead of `String does not match the pattern of "LEGACY_SYNTAX^"`.
+
 ## [1.1.19] - 2026-10-04
 
 ### Fixed

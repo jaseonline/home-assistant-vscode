@@ -20,14 +20,21 @@ export interface Data {
 }
 
 /**
+ * Never-matching pattern: any value is reported. patternErrorMessage replaces
+ * yaml-language-server's raw "does not match the pattern" text.
+ *
  * @TJS-pattern DEPRECATED^
  * @items.pattern DEPRECATED^
+ * @patternErrorMessage This option is deprecated and no longer supported by Home Assistant.
+ * @items.patternErrorMessage This option is deprecated and no longer supported by Home Assistant.
  */
 export type Deprecated = any | any[];
 
 /**
  * @TJS-pattern LEGACY_SYNTAX^
  * @items.pattern LEGACY_SYNTAX^
+ * @patternErrorMessage Legacy syntax: this key was renamed (e.g. platform → trigger, service → action). Home Assistant still accepts it, but new configs should use the current name.
+ * @items.patternErrorMessage Legacy syntax: this key was renamed (e.g. platform → trigger, service → action). Home Assistant still accepts it, but new configs should use the current name.
  */
 export type LegacySyntax = any | any[];
 
@@ -487,9 +494,11 @@ export type Template = string;
 export type DynamicTemplate = `{${"{" | "%" | "#"}${string}`;
 
 /**
- * @TJS-pattern ^(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)$
+ * HH:MM:SS or HH:MM (Home Assistant accepts both).
+ *
+ * @TJS-pattern ^(?:[01]\d|2[0123]):(?:[012345]\d)(?::(?:[012345]\d))?$
  */
-export type Time = `${number}:${number}:${number}`;
+export type Time = `${number}:${number}:${number}` | `${number}:${number}`;
 
 /**
  * @TJS-pattern ^(?:[01]\d|2[0123]):(?:[012345]\d)(:(?:[012345]\d))?$
