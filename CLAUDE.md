@@ -50,6 +50,7 @@ Tests run as VS Code integration tests inside a real VS Code extension host, usi
 - Config: `.vscode-test.js` — `out/test/**/*.test.js`, TDD mocha, 20 s timeout, `--disable-extensions`
 - There is no CLI mechanism to run a single test file; running `npm test` runs the full suite.
 - Most tests in `src/test/suite/` use mock connections and do not require a live HA instance.
+- `.vscode-test.js` strips `VSCODE_*`, `ELECTRON_*`, `CHROME_CRASHPAD_*`, `HASS_*` and `SUPERVISOR_*` from the environment. Without this, running `npm test` from a VS Code-spawned shell (integrated terminal, Claude Code) attaches the test instance to the running VS Code and it shuts down mid-suite with no mocha summary. The validation mock suites can also be run directly: `npx mocha --ui tdd out/test/suite/*-validation-mock.test.js`.
 
 ## Architecture
 
