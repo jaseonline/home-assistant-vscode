@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.1.16] - 2026-10-04
+
+### Fixed
+
+- Plain `device`, `area`, `floor` and `label` keys under an action's `data:` / `service_data:` are no longer validated as registry references. These names are reused as action parameters (e.g. Harmony `remote.send_command` `data.device: TV`). Plain keys are now only checked under `target`, `trigger(s)` and `condition(s)`; the `*_id` forms are still validated everywhere.
+
 ## [1.1.15] - 2026-10-04
 
 ### Fixed

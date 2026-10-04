@@ -37,11 +37,14 @@ export interface ReferenceScanOptions {
   ancestorKeys?: string[];
 }
 
-/** Where HA accepts target-style keys (area, device, floor, label). */
+/**
+ * Where plain target-style keys (area, device, floor, label) are references.
+ * `data`/`service_data` are deliberately excluded: action parameters such as
+ * Harmony's `remote.send_command` `data.device: TV` reuse these names for
+ * non-registry values. The `*_id` forms are validated everywhere.
+ */
 export const TARGET_ANCESTOR_KEYS = [
   "target",
-  "data",
-  "service_data",
   "trigger",
   "triggers",
   "condition",

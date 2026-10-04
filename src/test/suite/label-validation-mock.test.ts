@@ -480,7 +480,7 @@ custom_fields:
     assert.deepStrictEqual(found, ["compact_missing", "missing_from_list", "missing_inline"]);
   });
 
-  test("Plain label key is only validated under target or data", async () => {
+  test("Plain label key is only validated under target", async () => {
     const labelDiagnostics = await getLabelDiagnostics(
       "file:///test-label-ancestor.yaml",
       `views:
@@ -490,15 +490,20 @@ custom_fields:
 script:
   test:
     sequence:
-      - action: light.turn_on
+      - action: some.action
         data:
-          label: missing_under_data
+          label: action_parameter_not_a_label
+          label_id: missing_id_under_data
+      - action: light.turn_on
+        target:
+          label: missing_under_target
 `,
     );
 
-    assert.strictEqual(labelDiagnostics.length, 1);
-    assert.strictEqual(labelDiagnostics[0].message, "Label 'missing_under_data' does not exist in your Home Assistant instance");
-    assert.strictEqual(labelDiagnostics[0].range.start.line, 9);
-    assert.strictEqual(labelDiagnostics[0].range.start.character, 17);
+    const found = labelDiagnostics.map(d => d.message.match(/Label '([^']+)'/)![1]).sort();
+    assert.deepStrictEqual(found, ["missing_id_under_data", "missing_under_target"]);
+    const targetDiagnostic = labelDiagnostics.find(d => d.message.includes("missing_under_target"))!;
+    assert.strictEqual(targetDiagnostic.range.start.line, 13);
+    assert.strictEqual(targetDiagnostic.range.start.character, 17);
   });
 });

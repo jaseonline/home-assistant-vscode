@@ -279,6 +279,33 @@ automation:
     assert.strictEqual(deviceDiagnostics[0].message, "Device 'unknown_device_alt' does not exist in your Home Assistant instance");
   });
 
+  test("Should not treat action data.device parameters as device references", async () => {
+    // Harmony remote.send_command takes the Harmony device *name* in data.device
+    const content = `
+automation:
+  - alias: "Harmony Test"
+    trigger:
+      - trigger: state
+        entity_id: media_player.tv
+    action:
+      - action: remote.send_command
+        target:
+          device_id: unknown_harmony_hub
+        data:
+          device: TV
+          command: PowerOn
+`;
+
+    const document = TextDocument.create("file://test.yaml", "yaml", 1, content);
+    const diagnostics = await languageService.getDiagnostics(document);
+
+    const deviceDiagnostics = diagnostics.filter(d => d.code === "unknown-device");
+    assert.deepStrictEqual(
+      deviceDiagnostics.map(d => d.message),
+      ["Device 'unknown_harmony_hub' does not exist in your Home Assistant instance"],
+    );
+  });
+
   test("Device validation skips commented lines", async () => {
     const content = `
 # This is a comment with device_id: commented_device
