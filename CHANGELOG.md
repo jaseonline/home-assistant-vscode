@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.1.15] - 2026-10-04
+
+### Fixed
+
+- `Unresolved tag: !secret` (and `!include*`, `!input`, `!env_var`) errors on Home Assistant files when Red Hat YAML is installed. Red Hat YAML also validates the `home-assistant` language but did not know HA's custom tags; the extension now contributes a `yaml.customTags` default with the same tag list its own language server uses.
+
 ## [1.1.14] - 2026-10-04
 
 ### Fixed
