@@ -2,7 +2,7 @@
 name: vscode-extension-home-assistant
 description: >
   Context and conventions for Jason's JaseOnline/home-assistant-vscode VS Code extension fork.
-  ALWAYS use this skill when working on anything in C:\Dev\projects\personal\home-assistant-vscode —
+  ALWAYS use this skill when working on anything in D:\Projects\active\home-assistant-vscode —
   including the HA Neon Dark theme (src/parts/), TextMate grammars (src/grammars/, syntaxes/),
   the TypeScript extension host/language server, build scripts, or packaging. Also trigger when
   Jason mentions the neon theme, token colours, card-mod grammar, scope names, JS injection,
@@ -16,8 +16,8 @@ description: >
 ## Identity
 
 - **Repo:** `github.com/JaseOnline/home-assistant-vscode` — personal fork of `keesschollaart81/home-assistant-vscode`
-- **Local path:** `C:\Dev\projects\personal\home-assistant-vscode`
-- **Publisher:** `JaseOnline`  |  **Version:** `1.1.12`  |  **VS Code engine:** `^1.99.0`
+- **Local path:** `D:\Projects\active\home-assistant-vscode`
+- **Publisher:** `JaseOnline`  |  **Version:** `1.1.14`  |  **VS Code engine:** `^1.99.0`
 - **Language ID:** `home-assistant` (`.yaml`, `.yml`)  |  `home-assistant-jinja` (`.jinja`)
 
 Fork-specific additions vs upstream:
@@ -186,12 +186,11 @@ npm test
 - The `compile` script runs: `build-theme.js` → `tsc` language-service → `generateSchemas.ts --quick` → `node scripts/bundle.js`.
 - Bundler is esbuild (via `scripts/bundle.js`), not webpack.
 
-**Package:**
-```bash
-# Build .vsix (vsce runs prepublish → node scripts/bundle.js automatically)
-vsce package --no-yarn --skip-license --out ha-neon-dark-2.vsix
-# Install into VS Code
-code --install-extension ha-neon-dark-2.vsix --force
+**Package:** use `build.ps1` at the repo root. It compiles, runs `vsce package --no-dependencies` (out/ is already an esbuild bundle), names the file from package.json, and fails if `.remember/` or `.claude/` leak into the package.
+```powershell
+.\build.ps1               # compile + package home-assistant-vscode-<version>.vsix
+.\build.ps1 -Install      # ...and install into VS Code (then Developer: Reload Window)
+.\build.ps1 -SkipCompile  # repackage the existing out/ folder
 ```
 
 ---
@@ -235,7 +234,7 @@ Do not suppress these by altering schema types.
 
 ### Track 3 — Schema Staleness (In Progress)
 
-**hass-json-schema verdict:** `C:\Dev\projects\personal\home-assistant-json-schema` is a **schema mirror, not a generator**. It re-hosts the JSON files that `generateSchemas.ts` already produces for non-VSCode editors. The Nix flake is just CI deployment tooling. There is no mechanism to auto-generate schemas from HA Python source — Track 3 means hand-fixing the TypeScript type files in `src/language-service/src/schemas/`. The naming bug (e.g. `integration-light.json` contains automation schema) exists in both the mirror and the extension's own `src/language-service/src/schemas/json/` — they are identical copies.
+**hass-json-schema verdict:** `home-assistant-json-schema` (not currently cloned locally; was under `C:\Dev\projects\personal\`) is a **schema mirror, not a generator**. It re-hosts the JSON files that `generateSchemas.ts` already produces for non-VSCode editors. The Nix flake is just CI deployment tooling. There is no mechanism to auto-generate schemas from HA Python source — Track 3 means hand-fixing the TypeScript type files in `src/language-service/src/schemas/`. The naming bug (e.g. `integration-light.json` contains automation schema) exists in both the mirror and the extension's own `src/language-service/src/schemas/json/` — they are identical copies.
 
 **Staleness diff against HA `dev` branch (as of Track 3 session):**
 
@@ -259,8 +258,8 @@ Deprecation drift — low urgency (old names still work in HA, no false errors):
 
 **Next steps when resuming Track 3:**
 1. Check if `generateSchemas` completed: tail `generate-schemas.log`; confirm `set_conversation_response` appears in `src/language-service/dist/schemas/json/integration-automation.json`
-2. Rebuild vsix: `vsce package --no-yarn --skip-license --out ha-neon-dark-2.vsix`
-3. Reinstall: `code --install-extension ha-neon-dark-2.vsix --force` + Developer: Reload Window
+2. Rebuild and install: `.\build.ps1 -Install`
+3. Developer: Reload Window
 4. Test: verify `set_conversation_response:` gets completion and no squiggle in an automation
 5. Next gap: add the 6 missing selectors to `selectors.ts`
 
