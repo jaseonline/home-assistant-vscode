@@ -1,5 +1,5 @@
 ---
-name: vscode-extension-home-assistant
+name: ha-vscode-extension
 description: >
   Context and conventions for Jason's JaseOnline/home-assistant-vscode VS Code extension fork.
   ALWAYS use this skill when working on anything in D:\Projects\active\home-assistant-vscode —
