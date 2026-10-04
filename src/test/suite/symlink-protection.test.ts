@@ -176,4 +176,25 @@ suite("Symlink Protection Tests", () => {
     const foundFiles = files.filter(f => f.endsWith("should-find.yaml"));
     assert.strictEqual(foundFiles.length, 1, "Should find regular YAML file");
   });
+
+  test("Skips ignored folders by name without descending into them", async () => {
+    await setupTestDir();
+
+    await fs.mkdir(path.join(testDir, "custom_components", "big_icon_pack"), { recursive: true });
+    await fs.writeFile(path.join(testDir, "custom_components", "big_icon_pack", "manifest.yaml"), "x: 1");
+    await fs.mkdir(path.join(testDir, "packages"), { recursive: true });
+    await fs.writeFile(path.join(testDir, "packages", "lights.yaml"), "x: 1");
+    await fs.writeFile(path.join(testDir, "configuration.yaml"), "homeassistant:");
+
+    const documents = new TextDocuments(TextDocument);
+    const fileAccessor = new VsCodeFileAccessor(workspacePath, documents);
+
+    const all = await fileAccessor.getFilesInFolder(testDir);
+    const filtered = await fileAccessor.getFilesInFolder(testDir, ["custom_components"]);
+
+    assert.ok(all.some(f => f.includes("custom_components")), "Unfiltered walk should include custom_components");
+    assert.ok(!filtered.some(f => f.includes("custom_components")), "Ignored folder must not be walked");
+    assert.ok(filtered.some(f => f.endsWith("configuration.yaml")), "Root file should still be found");
+    assert.ok(filtered.some(f => f.endsWith("lights.yaml")), "Other folders should still be walked");
+  });
 });

@@ -6,7 +6,7 @@ import * as vscodeUri from "vscode-uri";
 
 export interface FileAccessor {
   getFileContents(fileName: string): Promise<string>;
-  getFilesInFolder(subFolder: string): Promise<string[]>;
+  getFilesInFolder(subFolder: string, ignoreDirs?: string[]): Promise<string[]>;
   getFilesInFolderRelativeFrom(
     subFolder: string,
     relativeFrom: string,
@@ -54,8 +54,16 @@ export class VsCodeFileAccessor implements FileAccessor {
 
   public async getFilesInFolder(
     subFolder: string,
-    filelist: string[] = [],
-    visitedDirs = new Set<string>(),
+    ignoreDirs: string[] = [],
+  ): Promise<string[]> {
+    return this.walkFolder(subFolder, [], new Set<string>(), new Set(ignoreDirs));
+  }
+
+  private async walkFolder(
+    subFolder: string,
+    filelist: string[],
+    visitedDirs: Set<string>,
+    ignoreDirs: Set<string>,
   ): Promise<string[]> {
     // Resolve subfolder relative to workspace path
     const resolvedSubFolder = path.isAbsolute(subFolder)
@@ -85,8 +93,9 @@ export class VsCodeFileAccessor implements FileAccessor {
     try {
       const files = await fs.readdir(normalizedSubFolder);
       for (const file of files) {
-        // ignore dot files
-        if (file.charAt(0) === ".") {
+        // ignore dot files, and caller-excluded folders (checked by name before
+        // any stat, so large trees cost nothing on slow mounts like SSHFS)
+        if (file.charAt(0) === "." || ignoreDirs.has(file)) {
           continue;
         }
         const filePath = path.join(normalizedSubFolder, file);
@@ -106,7 +115,7 @@ export class VsCodeFileAccessor implements FileAccessor {
             const targetStat = await fs.stat(filePath);
             if (targetStat.isDirectory()) {
               // Recursively scan, but with visited directory tracking
-              filelist = await this.getFilesInFolder(filePath, filelist, visitedDirs);
+              filelist = await this.walkFolder(filePath, filelist, visitedDirs, ignoreDirs);
             } else {
               // It's a file symlink, add it to the list
               filelist = filelist.concat(filePath);
@@ -116,7 +125,7 @@ export class VsCodeFileAccessor implements FileAccessor {
             console.log(`Skipping broken or inaccessible symlink: ${filePath}`);
           }
         } else if (stat.isDirectory() && !file.startsWith(".")) {
-          filelist = await this.getFilesInFolder(filePath, filelist, visitedDirs);
+          filelist = await this.walkFolder(filePath, filelist, visitedDirs, ignoreDirs);
         } else if (stat.isFile()) {
           filelist = filelist.concat(filePath);
         }

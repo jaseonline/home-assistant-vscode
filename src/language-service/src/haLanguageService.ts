@@ -54,6 +54,20 @@ export class HomeAssistantLanguageService {
   ) {
     // Patch the yaml-language-server to prevent stack overflow from circular schema references
     this.patchYamlLanguageServerForCircularRefs();
+
+    // Register HA's custom tags immediately. findAndApplySchemas() re-configures
+    // with schemas once file discovery finishes, but that can take a long time on
+    // network mounts; until then every !secret / !include would be reported as
+    // "Unresolved tag".
+    this.yamlLanguageService.configure({
+      validate: true,
+      customTags: this.getValidYamlTags(),
+      completion: true,
+      format: true,
+      hover: true,
+      isKubernetes: false,
+      schemas: [],
+    } as LanguageSettings);
   }
 
   /**

@@ -338,4 +338,25 @@ automation:
     assert.strictEqual(secretsDiagnostics.length, 0, 
       "Should not flag secrets in commented lines");
   });
+
+  test("HA custom tags are known before file discovery has run", async () => {
+    // findAndApplySchemas() is never called here, mirroring the window before
+    // (slow) file discovery completes in the real server.
+    const document = TextDocument.create(
+      "file:///test-early-tags.yaml",
+      "home-assistant",
+      1,
+      `- resource: https://example.com
+  headers:
+    X-API-KEY: !secret test_api_key
+  sensor: !include sensors.yaml
+  sensors: !include_dir_merge_list sensors
+`,
+    );
+
+    const diagnostics = await languageService.getDiagnostics(document);
+    const unresolved = diagnostics.filter(d => d.message.startsWith("Unresolved tag"));
+
+    assert.deepStrictEqual(unresolved.map(d => d.message), []);
+  });
 });

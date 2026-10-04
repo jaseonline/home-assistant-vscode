@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.1.17] - 2026-10-04
+
+### Fixed
+
+- `Unresolved tag: !secret` (and other HA tags) errors while file discovery is still running. HA's custom tags are now registered when the language server starts instead of only after discovery and schema setup complete.
+- Very slow (or never-finishing) startup discovery on large or network-mounted configs (SSHFS/SMB). Root discovery no longer walks `custom_components`, `www`, `node_modules`, `tts`, `deps` or `__pycache__` — a single icon-pack integration can add 20k+ files. `!include` / `!include_dir_*` resolution is unchanged.
+
 ## [1.1.16] - 2026-10-04
 
 ### Fixed

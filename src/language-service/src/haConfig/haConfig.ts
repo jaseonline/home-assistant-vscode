@@ -4,6 +4,16 @@ import { HomeAssistantYamlFile } from "./haYamlFile";
 import { ScriptReferences, HaFileInfo, IncludeReferences } from "./dto";
 
 export class HomeAssistantConfiguration {
+  /** Folder names never descended into when looking for root config files. */
+  public static readonly rootDiscoveryIgnoredDirs = [
+    "custom_components",
+    "www",
+    "node_modules",
+    "tts",
+    "deps",
+    "__pycache__",
+  ];
+
   private files: FilesCollection;
 
   private subFolder = "";
@@ -108,7 +118,14 @@ export class HomeAssistantConfiguration {
   };
 
   private getRootFiles = async (): Promise<string[]> => {
-    const filesInRoot = await this.fileAccessor.getFilesInFolder("");
+    // Root discovery only needs a few files and folders, so skip trees that
+    // never hold HA YAML config: custom_components alone can be 20k+ files,
+    // which takes minutes to walk on a network mount (SSHFS/SMB) and holds
+    // up schema + custom-tag setup. !include / !include_dir_* are unaffected.
+    const filesInRoot = await this.fileAccessor.getFilesInFolder(
+      "",
+      HomeAssistantConfiguration.rootDiscoveryIgnoredDirs,
+    );
     const ourFiles = [
       "configuration.yaml",
       "ui-lovelace.yaml",
