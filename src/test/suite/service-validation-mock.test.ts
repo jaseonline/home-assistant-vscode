@@ -436,4 +436,31 @@ automation:
     assert.strictEqual(actionDiagnostics.length, 0, 
       "Should not flag actions in commented lines");
   });
+
+  test("Action validation only matches action keys at the start of a line", async () => {
+    // Keys that merely end in 'action' (or 'service') must not be validated.
+    const testContent = `
+automation:
+  - alias: "Suffix Test"
+    trigger:
+      - platform: state
+        entity_id: sensor.test
+    action:
+      - variables:
+          tap_action: light.not_a_real_action
+          other_service: switch.not_a_real_service
+      - action: light.missing_action
+`;
+
+    const document = TextDocument.create("file:///test-action-suffix.yaml", "yaml", 1, testContent);
+    const diagnostics = await languageService.getDiagnostics(document);
+    const actionDiagnostics = diagnostics.filter(d =>
+      d.source === "home-assistant" && d.code === "unknown-action"
+    );
+
+    assert.deepStrictEqual(
+      actionDiagnostics.map(d => d.message),
+      ["Action 'light.missing_action' does not exist in your Home Assistant instance"],
+    );
+  });
 });

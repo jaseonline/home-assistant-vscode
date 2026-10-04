@@ -412,4 +412,93 @@ automation:
     assert.strictEqual(labelDiagnostics.length, 0, 
       "Should not flag labels in commented lines");
   });
+
+  const getLabelDiagnostics = async (uri: string, content: string) => {
+    const document = TextDocument.create(uri, "yaml", 1, content);
+    const diagnostics = await languageService.getDiagnostics(document);
+    return diagnostics.filter(d => d.source === "home-assistant" && d.code === "unknown-label");
+  };
+
+  test("Label validation ignores button-card label keys and styles", async () => {
+    // Modelled on a real button-card popup template that produced
+    // 'true', '|' and CSS-declaration false positives.
+    const labelDiagnostics = await getLabelDiagnostics(
+      "file:///popup_tfl_status.yaml",
+      `entity: sensor.tfl_london_underground
+show_label: true
+label: |
+  [[[
+    return entity.state;
+  ]]]
+styles:
+  label:
+    - font-size: 14px
+    - align-self: center
+  custom_fields:
+    nested:
+      - box-shadow: none
+      - padding: 0 20px 0 20px
+      - line-height: 1.2
+custom_fields:
+  status:
+    card:
+      type: custom:button-card
+      label: Good Service
+      styles:
+        label:
+          - color: |
+              [[[ return 'red'; ]]]
+`,
+    );
+
+    assert.deepStrictEqual(labelDiagnostics.map(d => d.message), []);
+  });
+
+  test("Label validation attributes list items to their real parent key", async () => {
+    const labelDiagnostics = await getLabelDiagnostics(
+      "file:///test-label-lists.yaml",
+      `script:
+  test:
+    sequence:
+      - action: light.turn_on
+        target:
+          label_id:
+            - security
+            - missing_from_list
+          entity_id:
+            - not_a_label
+      - action: light.turn_off
+        target: { label_id: missing_inline, area_id: kitchen }
+      - action: light.toggle
+        target:
+          label_id:
+          - compact_missing
+`,
+    );
+
+    const found = labelDiagnostics.map(d => d.message.match(/Label '([^']+)'/)![1]).sort();
+    assert.deepStrictEqual(found, ["compact_missing", "missing_from_list", "missing_inline"]);
+  });
+
+  test("Plain label key is only validated under target or data", async () => {
+    const labelDiagnostics = await getLabelDiagnostics(
+      "file:///test-label-ancestor.yaml",
+      `views:
+  - cards:
+      - type: entities
+        label: not_a_label_reference
+script:
+  test:
+    sequence:
+      - action: light.turn_on
+        data:
+          label: missing_under_data
+`,
+    );
+
+    assert.strictEqual(labelDiagnostics.length, 1);
+    assert.strictEqual(labelDiagnostics[0].message, "Label 'missing_under_data' does not exist in your Home Assistant instance");
+    assert.strictEqual(labelDiagnostics[0].range.start.line, 9);
+    assert.strictEqual(labelDiagnostics[0].range.start.character, 17);
+  });
 });
