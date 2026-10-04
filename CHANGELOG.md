@@ -6,6 +6,23 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.1.19] - 2026-10-04
+
+### Fixed
+
+- Schemas were never applied to configs on a mapped network drive (e.g. `H:\` over SSHFS/SMB): files were registered under their `realpath`, which resolves to a UNC path (`\\server\share\...`) the editor never uses. Files are now registered under their discovered path, its percent-encoded drive form (`h%3A`, as VS Code sends it) and the resolved path.
+- One unresolvable file (e.g. an `!include` of a deleted file) no longer aborts schema assignment for every other file.
+
+### Added
+
+- `home-assistant-vscode.schemaValidation` (default **off**): report schema findings (unknown or misplaced keys) as problems. Off by default because the bundled schemas lag behind current Home Assistant syntax and produce false errors — for example every script in `scripts.yaml` is reported. YAML syntax errors and entity/area/device/label/action checks are unaffected; schemas are still used for completion and hover.
+
+### Changed
+
+- `haLanguageService.ts` split (1,647 → ~520 lines): reference/secret validation moved to `validation/referenceValidator.ts` (checks now run in parallel), hovers and template rendering to `hover/hoverProvider.ts`, circular-`$ref` handling to `schemas/circularRefs.ts`. Removed a no-op schema "patch" method.
+- Single `FileAccessor` interface (the server copy now implements the language-service one).
+- The VS Code-hosted schema tests, three of which were hard-coded to pass, are replaced by real tests that build an on-disk config which `!include`s the file under test.
+
 ## [1.1.18] - 2026-10-04
 
 ### Fixed

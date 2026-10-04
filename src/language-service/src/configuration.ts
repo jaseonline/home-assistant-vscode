@@ -8,6 +8,7 @@ export interface IConfigurationService {
   ignoreCertificates: boolean;
   disableAutomaticFileAssociation: boolean;
   autoRenderTemplates: boolean;
+  schemaValidation: boolean;
   updateConfiguration(config: DidChangeConfigurationParams): void;
 }
 
@@ -17,6 +18,7 @@ export interface HomeAssistantConfiguration {
   ignoreCertificates: boolean;
   disableAutomaticFileAssociation: boolean;
   autoRenderTemplates: boolean;
+  schemaValidation: boolean;
 }
 
 export class ConfigurationService implements IConfigurationService {
@@ -31,6 +33,10 @@ export class ConfigurationService implements IConfigurationService {
   public disableAutomaticFileAssociation = false;
 
   public autoRenderTemplates = true;
+
+  // Off by default: the bundled HA schemas lag behind current HA syntax and
+  // report many false errors (e.g. every script in scripts.yaml)
+  public schemaValidation = false;
 
   constructor() {
     this.setConfigViaEnvironmentVariables();
@@ -47,6 +53,7 @@ export class ConfigurationService implements IConfigurationService {
     const prevIgnoreCertificates = this.ignoreCertificates;
     const prevDisableAutomaticFileAssociation = this.disableAutomaticFileAssociation;
     const prevAutoRenderTemplates = this.autoRenderTemplates;
+    const prevSchemaValidation = this.schemaValidation;
 
     // Get the Home Assistant configuration section
     const incoming = config.settings[
@@ -73,6 +80,7 @@ export class ConfigurationService implements IConfigurationService {
       this.ignoreCertificates = !!incoming.ignoreCertificates;
       this.disableAutomaticFileAssociation = !!incoming.disableAutomaticFileAssociation;
       this.autoRenderTemplates = incoming.autoRenderTemplates !== undefined ? !!incoming.autoRenderTemplates : true;
+      this.schemaValidation = !!incoming.schemaValidation;
     } else {
       console.warn("Received invalid or empty configuration object");
     }
@@ -106,6 +114,10 @@ export class ConfigurationService implements IConfigurationService {
     
     if (this.autoRenderTemplates !== prevAutoRenderTemplates) {
       console.log(`Auto render templates setting changed: ${prevAutoRenderTemplates} -> ${this.autoRenderTemplates}`);
+    }
+
+    if (this.schemaValidation !== prevSchemaValidation) {
+      console.log(`Schema validation setting changed: ${prevSchemaValidation} -> ${this.schemaValidation}`);
     }
 
     console.log(`Configuration status after update: ${this.isConfigured ? "Configured" : "Not Configured"}`);

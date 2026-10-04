@@ -3,22 +3,7 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import * as fs from "fs/promises";
 import * as path from "path";
 import * as vscodeUri from "vscode-uri";
-
-export interface FileAccessor {
-  getFileContents(fileName: string): Promise<string>;
-  getFilesInFolder(subFolder: string, ignoreDirs?: string[], maxDepth?: number): Promise<string[]>;
-  getFilesInFolderRelativeFrom(
-    subFolder: string,
-    relativeFrom: string,
-  ): Promise<string[]>;
-  getFilesInFolderRelativeFromAsFileUri(
-    subFolder: string,
-    relativeFrom: string,
-  ): Promise<string[]>;
-  getRelativePath(relativeFrom: string, filename: string): string;
-  getRelativePathAsFileUri(relativeFrom: string, filename: string): string;
-  fromUriToLocalPath(uri: string): string;
-}
+import { FileAccessor } from "../language-service/src/fileAccessor";
 
 export class VsCodeFileAccessor implements FileAccessor {
   private ourRoot: string;

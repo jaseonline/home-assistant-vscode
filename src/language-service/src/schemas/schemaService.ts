@@ -92,24 +92,41 @@ export class SchemaServiceForIncludes {
       );
       if (relatedPathToSchemaMapping) {
         const id = `http://schemas.home-assistant.io/${relatedPathToSchemaMapping.key}`;
-        let absolutePath = await fs.realpath(haFiles[sourceFile].filename);
-        absolutePath = absolutePath.replace(/\\/g, "/");
-        const fileass = encodeURI(absolutePath);
+        // Match the file both as discovered and as resolved by realpath. The
+        // editor opens files by the discovered path; realpath can rewrite it,
+        // e.g. a mapped network drive (H:\ over SSHFS/SMB) becomes a UNC path
+        // (\\server\share\...) the editor's URI never matches, which silently
+        // left every file on such a drive without a schema.
+        const discoveredPath = haFiles[sourceFile].filename;
+        let resolvedPath = discoveredPath;
+        try {
+          resolvedPath = await fs.realpath(discoveredPath);
+        } catch (error) {
+          // One unresolvable file (e.g. an !include of a deleted file) must
+          // not abort schema assignment for every other file
+          console.log(`Could not resolve ${discoveredPath}, using it as-is:`, error);
+        }
+        const fileMatches = [...new Set([discoveredPath, resolvedPath])].flatMap((p) => {
+          const asUriPath = encodeURI(p.replace(/\\/g, "/"));
+          // VS Code sends Windows drive letters percent-encoded (file:///h%3A/...)
+          const encodedDrive = asUriPath.replace(/^([a-zA-Z]):/, "$1%3A");
+          return encodedDrive === asUriPath ? [asUriPath] : [asUriPath, encodedDrive];
+        });
         let resultEntry = results.find((x) => x.uri === id);
 
         console.log(
-          `Assigning ${fileass} the ${relatedPathToSchemaMapping.path} schema`,
+          `Assigning ${fileMatches.join(" / ")} the ${relatedPathToSchemaMapping.path} schema`,
         );
 
         if (!resultEntry) {
           resultEntry = {
             uri: id,
-            fileMatch: [fileass],
+            fileMatch: [...fileMatches],
             schema: relatedPathToSchemaMapping.schema,
           };
           results.push(resultEntry);
         } else if (resultEntry.fileMatch !== undefined) {
-          resultEntry.fileMatch.push(fileass);
+          resultEntry.fileMatch.push(...fileMatches);
         }
       }
     }

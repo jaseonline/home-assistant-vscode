@@ -226,7 +226,14 @@ connection.onInitialize(async (params) => {
     }
     
     // Update the configuration service with the new settings
+    const schemaValidationBefore = configurationService.schemaValidation;
     configurationService.updateConfiguration(config);
+    if (configurationService.schemaValidation !== schemaValidationBefore) {
+      // Show or hide schema findings in open files straight away
+      for (const d of documents.all()) {
+        sendDiagnostics(d.uri, await homeAsisstantLanguageService.getDiagnostics(d));
+      }
+    }
     
     // Notify connection handler to update connection if needed
     await haConnection.notifyConfigUpdate();

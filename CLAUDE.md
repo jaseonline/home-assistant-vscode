@@ -104,7 +104,12 @@ On install it immediately sends an initial `DidChangeConfigurationNotification` 
 
 Self-contained sub-package with its own `tsconfig.json` (`outDir: dist`, `rootDir: src`). Provides:
 
-- **`haLanguageService.ts`** — Orchestrates completions, diagnostics, hover, definition. Wraps `yaml-language-server` and injects HA-specific completions. Hover template rendering uses a 30 s in-memory cache (`templateCache` map) keyed by template text.
+- **`haLanguageService.ts`** — LSP entry points (diagnostics, completion, hover, definition, formatting). Wraps `yaml-language-server`, applies schemas, registers HA custom tags at construction, and delegates to:
+  - `validation/referenceValidator.ts` — entity/area/device/floor/label/action and `!secret` checks against live HA data, built on `validation/referenceScanner.ts` (indent-aware YAML key/value scanner)
+  - `hover/hoverProvider.ts` — schema, entity, action and template hovers; template rendering uses a 30 s in-memory cache keyed by template text
+  - `schemas/circularRefs.ts` — limits circular `$ref` expansion before schemas reach the YAML service
+- **Schema findings are opt-in** (`home-assistant-vscode.schemaValidation`, default off): the bundled schemas lag current HA syntax and report false errors (e.g. every key in `scripts.yaml`). Schema diagnostics have source `yaml-schema: …`; YAML syntax errors (source `YAML`) are always shown. `schemaService.ts` registers each file under its discovered path, its percent-encoded drive form and its `realpath` — on a mapped network drive realpath returns a UNC path the editor never uses.
+- **`home-assistant/registryCache.ts`** — cached, event-refreshed HA registries (areas, devices, floors, labels, entity registry) with request timeouts; used by `haConnection.ts`.
 - **`completionHelpers/`** — One file per completion type: entity IDs, services, areas, floors, labels, device IDs, secrets, UUIDs.
 - **`haConfig/`** — Parses the HA config directory, resolves `!include` / `!include_dir_*` YAML tags. File rediscovery on save is debounced (1 s) and only fires for root config files, files in `blueprints/`, or files containing `!include` directives — not on every save.
 - **`home-assistant/`** — WebSocket connection to HA (`haConnection.ts`, `socket.ts`) using `home-assistant-js-websocket`. Exposes `onConnectionEstablished` and `onConnectionFailed` callbacks used by the server to notify the extension host.

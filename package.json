@@ -2,7 +2,7 @@
   "name": "home-assistant-vscode",
   "displayName": "Home Assistant Config Helper",
   "description": "Home Assistant Configuration Helper",
-  "version": "1.1.18",
+  "version": "1.1.19",
   "preview": false,
   "engines": {
     "vscode": "^1.99.0"
@@ -63,6 +63,11 @@
             "type": "boolean",
             "default": true,
             "description": "Enable automatic rendering of Home Assistant templates on hover. When enabled, templates will be rendered and displayed as previews when hovering over template values in YAML files."
+          },
+          "home-assistant-vscode.schemaValidation": {
+            "type": "boolean",
+            "default": false,
+            "description": "Report Home Assistant schema validation findings (unknown or misplaced keys) as problems. Off by default because the bundled schemas lag behind current Home Assistant syntax and produce false errors. YAML syntax errors and entity/area/device checks are always reported. Schemas are still used for completion and hover."
           }
         }
       }
