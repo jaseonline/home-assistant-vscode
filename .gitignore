@@ -4,3 +4,5 @@ node_modules
 *.vsix
 src/language-service/dist
 src/language-service/src/schemas/json/*.json
+# Build / tool logs
+*.log
