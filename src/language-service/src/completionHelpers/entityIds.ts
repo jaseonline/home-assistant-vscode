@@ -342,7 +342,7 @@ export class EntityIdCompletionContribution implements JSONWorkerContribution {
     try {
       // Get the entity registry entry to find device_id
       const entityRegistry = await this.haConnection.getHassEntityRegistry();
-      const entityEntry = entityRegistry[entityId];
+      const entityEntry = entityRegistry?.[entityId];
       
       if (!entityEntry || !entityEntry.device_id) {
         return null;
@@ -350,7 +350,7 @@ export class EntityIdCompletionContribution implements JSONWorkerContribution {
 
       // Get the device information
       const devices = await this.haConnection.getHassDevices();
-      const device = devices[entityEntry.device_id];
+      const device = devices?.[entityEntry.device_id];
       
       if (!device) {
         return null;

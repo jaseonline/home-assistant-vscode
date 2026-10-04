@@ -121,6 +121,19 @@ connection.onInitialize(async (params) => {
     connection.sendNotification("ha_connection_error", { error: error || "Unknown error" });
   };
 
+  // A device/area/label/... was added, removed or renamed in HA: re-validate
+  // open files so stale "does not exist" warnings clear without a restart.
+  // Debounced because HA emits a burst of events when an integration reloads.
+  let registryUpdateDebounce: NodeJS.Timeout | undefined;
+  haConnection.onRegistryUpdated = () => {
+    clearTimeout(registryUpdateDebounce);
+    registryUpdateDebounce = setTimeout(async () => {
+      for (const d of documents.all()) {
+        sendDiagnostics(d.uri, await homeAsisstantLanguageService.getDiagnostics(d));
+      }
+    }, 2000);
+  };
+
   documents.onDidChangeContent((e) =>
     homeAsisstantLanguageService.onDocumentChange(e.document),
   );

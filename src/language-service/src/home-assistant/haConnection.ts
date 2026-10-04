@@ -16,6 +16,7 @@ import {
 } from "home-assistant-js-websocket";
 import { IConfigurationService } from "../configuration";
 import { createSocket } from "./socket";
+import { RegistryCache, withTimeout } from "./registryCache";
 
 export interface HassArea {
   area_id: string;
@@ -118,8 +119,8 @@ export interface IHaConnection {
   getLabelCompletions(): Promise<CompletionItem[]>;
   getServiceCompletions(): Promise<CompletionItem[]>;
   getHassEntities(): Promise<HassEntities>;
-  getHassDevices(): Promise<HassDevices>;
-  getHassEntityRegistry(): Promise<HassEntityRegistry>;
+  getHassDevices(): Promise<HassDevices | undefined>;
+  getHassEntityRegistry(): Promise<HassEntityRegistry | undefined>;
   getHassServices(): Promise<HassServices>;
   resolveEntityCompletionDocumentation(entityId: string): Promise<MarkupContent | undefined>;
 }
@@ -127,19 +128,30 @@ export interface IHaConnection {
 export class HaConnection implements IHaConnection {
   private connection: Connection | undefined;
 
-  private hassAreas!: Promise<HassAreas>;
+  // In-flight connection attempt, shared so parallel callers (several
+  // validators run at once when a file opens) don't each open a connection
+  private connectPromise: Promise<void> | undefined;
 
-  private hassDevices!: Promise<HassDevices>;
+  private readonly areas = new RegistryCache<HassArea, HassAreas>(
+    "areas", "config/area_registry/list", "area_registry_updated", (a) => a.area_id);
 
-  private hassEntities!: Promise<HassEntities>;
+  private readonly devices = new RegistryCache<HassDevice, HassDevices>(
+    "devices", "config/device_registry/list", "device_registry_updated", (d) => d.id);
 
-  private hassEntityRegistry!: Promise<HassEntityRegistry>;
+  private readonly entityRegistry = new RegistryCache<HassEntityRegistryEntry, HassEntityRegistry>(
+    "entity registry entries", "config/entity_registry/list", "entity_registry_updated", (e) => e.entity_id);
 
-  private hassFloors!: Promise<HassFloors>;
+  private readonly floors = new RegistryCache<HassFloor, HassFloors>(
+    "floors", "config/floor_registry/list", "floor_registry_updated", (f) => f.floor_id);
 
-  private hassLabels!: Promise<HassLabels>;
+  private readonly labels = new RegistryCache<HassLabel, HassLabels>(
+    "labels", "config/label_registry/list", "label_registry_updated", (l) => l.label_id);
 
-  private hassServices!: Promise<HassServices>;
+  private readonly registries = [this.areas, this.devices, this.entityRegistry, this.floors, this.labels];
+
+  private hassEntities: Promise<HassEntities> | undefined;
+
+  private hassServices: Promise<HassServices> | undefined;
 
   // Cache the current entities to avoid memory churn from subscription updates
   private currentEntitiesCache: HassEntities | undefined;
@@ -149,8 +161,10 @@ export class HaConnection implements IHaConnection {
   private unsubscribeEntities: (() => void) | undefined;
   private unsubscribeServices: (() => void) | undefined;
 
-  // Track the last successful configuration to avoid unnecessary reconnections
-  private lastSuccessfulConfig: {
+  // Configuration of the connection that is established *or being
+  // established*. Recorded when an attempt starts (not when it finishes) so
+  // configuration notifications arriving mid-connect don't trigger reconnects.
+  private activeConfig: {
     token?: string;
     url?: string;
     ignoreCertificates?: boolean;
@@ -160,10 +174,17 @@ export class HaConnection implements IHaConnection {
   public onConnectionEstablished: ((info: { name?: string; version?: string }) => void) | undefined;
   public onConnectionFailed: ((error: string) => void) | undefined;
 
+  /** Called when an HA registry (areas, devices, ...) changed; open files can be re-validated. */
+  public onRegistryUpdated: (() => void) | undefined;
+
   // Track the last entity count to avoid logging duplicate messages
   private lastEntityCount: number | undefined;
 
-  constructor(private configurationService: IConfigurationService) {}
+  constructor(private configurationService: IConfigurationService) {
+    for (const registry of this.registries) {
+      registry.onUpdated = () => this.onRegistryUpdated?.();
+    }
+  }
 
   public tryConnect = async (): Promise<void> => {
     try {
@@ -174,7 +195,29 @@ export class HaConnection implements IHaConnection {
     }
   };
 
-  private async createConnection(): Promise<void> {
+  private createConnection(): Promise<void> {
+    if (this.connection !== undefined) {
+      return Promise.resolve();
+    }
+    if (this.connectPromise === undefined) {
+      this.connectPromise = this.createConnectionInternal().finally(() => {
+        this.connectPromise = undefined;
+      });
+    }
+    return this.connectPromise;
+  }
+
+  /** Connect if needed; resolves to the connection, or undefined if HA is unreachable. */
+  private async getConnection(): Promise<Connection | undefined> {
+    try {
+      await this.createConnection();
+    } catch {
+      // Already logged by createConnectionInternal / handleConnectionError
+    }
+    return this.connection;
+  }
+
+  private async createConnectionInternal(): Promise<void> {
     // Enhanced connection debugging
     console.log("Creating Home Assistant connection...");
     console.log(`Configuration status: ${this.configurationService.isConfigured ? "Configured" : "Not Configured"}`);
@@ -190,6 +233,12 @@ export class HaConnection implements IHaConnection {
       console.log("Connection already exists, reusing existing connection");
       return;
     }
+
+    this.activeConfig = {
+      token: this.configurationService.token,
+      url: this.configurationService.url,
+      ignoreCertificates: this.configurationService.ignoreCertificates,
+    };
 
     // Log connection details before creating auth
     console.log(`Creating Home Assistant connection to URL: ${this.configurationService.url}`);
@@ -271,15 +320,12 @@ export class HaConnection implements IHaConnection {
           createSocket(auth, this.configurationService.ignoreCertificates),
       });
       console.log("Connected to Home Assistant");
-      
-      // Store successful connection configuration
-      this.lastSuccessfulConfig = {
-        token: this.configurationService.token,
-        url: this.configurationService.url,
-        ignoreCertificates: this.configurationService.ignoreCertificates
-      };
-      console.log("Stored successful connection configuration for future reference");
-      
+
+      // Keep registry caches in step with HA (devices re-added, areas renamed, ...)
+      for (const registry of this.registries) {
+        void registry.attach(this.connection);
+      }
+
       // Notify about successful connection
       if (this.onConnectionEstablished) {
         try {
@@ -329,6 +375,11 @@ export class HaConnection implements IHaConnection {
 
     this.connection.addEventListener("ready", () => {
       console.log("(re-)connected to Home Assistant");
+      // Registries may have changed while we were disconnected; the event
+      // subscriptions themselves are restored by home-assistant-js-websocket
+      for (const registry of this.registries) {
+        registry.invalidate();
+      }
       if (this.onConnectionEstablished) {
         this.onConnectionEstablished({ name: "Home Assistant", version: "1.0" });
       }
@@ -348,6 +399,8 @@ export class HaConnection implements IHaConnection {
 
   private handleConnectionError = (error: any) => {
     this.connection = undefined;
+    // Failed attempt: the next configuration notification may retry
+    this.activeConfig = {};
     
     // Ensure we have some token to use for debugging
     let tokenIndication = "(no token)";
@@ -410,17 +463,22 @@ export class HaConnection implements IHaConnection {
 
   public notifyConfigUpdate = async (): Promise<void> => {
     console.log("Configuration update detected, checking if reconnection is needed...");
-    
-    // Check if the token or URL has changed since last successful connection
-    const tokenChanged = this.lastSuccessfulConfig.token !== this.configurationService.token;
-    const urlChanged = this.lastSuccessfulConfig.url !== this.configurationService.url;
-    const certSettingChanged = this.lastSuccessfulConfig.ignoreCertificates !== this.configurationService.ignoreCertificates;
-    
+
+    // Let an in-flight attempt finish first; it records activeConfig up front,
+    // so duplicate notifications sent during startup compare as unchanged
+    if (this.connectPromise) {
+      await this.connectPromise.catch((): void => undefined);
+    }
+
+    const tokenChanged = this.activeConfig.token !== this.configurationService.token;
+    const urlChanged = this.activeConfig.url !== this.configurationService.url;
+    const certSettingChanged = this.activeConfig.ignoreCertificates !== this.configurationService.ignoreCertificates;
+
     if (!tokenChanged && !urlChanged && !certSettingChanged) {
       console.log("No relevant configuration changes detected, skipping reconnection");
       return;
     }
-    
+
     console.log("Configuration changes detected, reconnecting to Home Assistant...");
     if (tokenChanged) {
       console.log("Token has changed, reconnection required");
@@ -431,108 +489,17 @@ export class HaConnection implements IHaConnection {
     if (certSettingChanged) {
       console.log("Certificate settings changed, reconnection required");
     }
-    
+
     this.disconnect();
+    this.hassEntities = undefined;
+    this.hassServices = undefined;
 
-    // Reset connection state to force full reconnection
-    this.connection = undefined;
-    this.hassAreas = undefined as any;
-    this.hassDevices = undefined as any;
-    this.hassEntities = undefined as any;
-    this.hassEntityRegistry = undefined as any;
-    this.hassFloors = undefined as any;
-    this.hassLabels = undefined as any;
-    this.hassServices = undefined as any;
-
-    // Clear caches to release memory
-    this.currentEntitiesCache = undefined;
-    this.currentServicesCache = undefined;
-    
-    try {
-      await this.tryConnect();
-      console.log("Successfully reconnected to Home Assistant after configuration update");
-      
-      // Update last successful configuration
-      this.lastSuccessfulConfig = {
-        token: this.configurationService.token,
-        url: this.configurationService.url,
-        ignoreCertificates: this.configurationService.ignoreCertificates
-      };
-      
-      // Notify about successful reconnection
-      if (this.onConnectionEstablished) {
-        try {
-          // Get instance name if possible
-          let instanceName;
-          let version;
-          try {
-            const configResponse = await this.callApi("get", "config");
-            if (configResponse && typeof configResponse === "object") {
-              instanceName = configResponse.location_name;
-              version = configResponse.version;
-            }
-          } catch (error) {
-            console.log("Could not fetch Home Assistant instance name after reconnection:", error);
-          }
-          
-          this.onConnectionEstablished({
-            name: instanceName,
-            version: version
-          });
-        } catch (cbError) {
-          console.error("Error in connection established callback after config update:", cbError);
-        }
-      }
-    } catch (error) {
-      console.error("Failed to reconnect after configuration update:", error);
-      
-      // Notify about connection failure
-      if (this.onConnectionFailed) {
-        let errorMessage = "Unknown error";
-        if (typeof error === "string") {
-          errorMessage = error;
-        } else if (error && typeof error === "object" && "message" in error) {
-          errorMessage = error.message as string;
-        }
-        try {
-          this.onConnectionFailed(errorMessage);
-        } catch (cbError) {
-          console.error("Error in connection failed callback after config update:", cbError);
-        }
-      }
-      // Error is already displayed in logs via error handler
-    }
+    // createConnection reports success/failure through the callbacks
+    await this.tryConnect();
   };
 
-  private getHassAreas = async (): Promise<HassAreas> => {
-    if (this.hassAreas !== undefined) {
-      return this.hassAreas;
-    }
-
-    await this.createConnection();
-
-    this.hassAreas = new Promise<HassAreas>(
-      // eslint-disable-next-line no-async-promise-executor
-      async (resolve, reject) => {
-        if (!this.connection) {
-          return reject();
-        }
-        this.connection
-          ?.sendMessagePromise<HassArea[]>({
-            type: "config/area_registry/list",
-          })
-          .then((areas) => {
-            console.log(`Got ${areas.length} areas from Home Assistant`);
-            const repacked_areas: HassAreas = {};
-            areas.forEach((area) => {
-              repacked_areas[area.area_id] = area;
-            });
-            return resolve(repacked_areas);
-          });
-      },
-    );
-    return this.hassAreas;
-  };
+  private getHassAreas = async (): Promise<HassAreas | undefined> =>
+    this.areas.get(await this.getConnection());
 
   public async getAreaCompletions(): Promise<CompletionItem[]> {
     const areas = await this.getHassAreas();
@@ -568,35 +535,8 @@ export class HaConnection implements IHaConnection {
     return completions;
   }
 
-  private getHassFloors = async (): Promise<HassFloors> => {
-    if (this.hassFloors !== undefined) {
-      return this.hassFloors;
-    }
-
-    await this.createConnection();
-
-    this.hassFloors = new Promise<HassFloors>(
-      // eslint-disable-next-line no-async-promise-executor
-      async (resolve, reject) => {
-        if (!this.connection) {
-          return reject();
-        }
-        this.connection
-          ?.sendMessagePromise<HassFloor[]>({
-            type: "config/floor_registry/list",
-          })
-          .then((floors) => {
-            console.log(`Got ${floors.length} floors from Home Assistant`);
-            const repacked_floors: HassFloors = {};
-            floors.forEach((floor) => {
-              repacked_floors[floor.floor_id] = floor;
-            });
-            return resolve(repacked_floors);
-          });
-      },
-    );
-    return this.hassFloors;
-  };
+  private getHassFloors = async (): Promise<HassFloors | undefined> =>
+    this.floors.get(await this.getConnection());
 
   public async getFloorCompletions(): Promise<CompletionItem[]> {
     const floors = await this.getHassFloors();
@@ -625,37 +565,10 @@ export class HaConnection implements IHaConnection {
     return completions;
   }
 
-  private getHassDevicesInternal = async (): Promise<HassDevices> => {
-    if (this.hassDevices !== undefined) {
-      return this.hassDevices;
-    }
+  private getHassDevicesInternal = async (): Promise<HassDevices | undefined> =>
+    this.devices.get(await this.getConnection());
 
-    await this.createConnection();
-
-    this.hassDevices = new Promise<HassDevices>(
-      // eslint-disable-next-line no-async-promise-executor
-      async (resolve, reject) => {
-        if (!this.connection) {
-          return reject();
-        }
-        this.connection
-          ?.sendMessagePromise<HassDevice[]>({
-            type: "config/device_registry/list",
-          })
-          .then((devices) => {
-            console.log(`Got ${devices.length} devices from Home Assistant`);
-            const repacked_devices: HassDevices = {};
-            devices.forEach((device) => {
-              repacked_devices[device.id] = device;
-            });
-            return resolve(repacked_devices);
-          });
-      },
-    );
-    return this.hassDevices;
-  };
-
-  public async getHassDevices(): Promise<HassDevices> {
+  public async getHassDevices(): Promise<HassDevices | undefined> {
     return this.getHassDevicesInternal();
   }
 
@@ -762,72 +675,41 @@ export class HaConnection implements IHaConnection {
         });
       },
     );
-    return this.hassEntities;
+    return this.forgetIfFailed(this.hassEntities, "entities", () => this.hassEntities, () => {
+      this.hassEntities = undefined;
+    });
   }
 
-  private getHassEntityRegistryInternal = async (): Promise<HassEntityRegistry> => {
-    if (this.hassEntityRegistry !== undefined) {
-      return this.hassEntityRegistry;
-    }
+  /**
+   * Bound the first load of a subscription-backed cache. A rejected or
+   * timed-out load is not kept, so the next call retries once HA is reachable
+   * instead of every caller failing (or waiting) for the rest of the session.
+   */
+  private forgetIfFailed<T>(
+    initial: Promise<T>,
+    label: string,
+    current: () => Promise<T> | undefined,
+    clear: () => void,
+  ): Promise<T> {
+    const bounded = withTimeout(initial, 30000, `Initial ${label} load`);
+    bounded.catch((error) => {
+      console.log(`Could not load ${label} from Home Assistant:`, error);
+      if (current() === initial) {
+        clear();
+      }
+    });
+    return bounded;
+  }
 
-    await this.createConnection();
+  private getHassEntityRegistryInternal = async (): Promise<HassEntityRegistry | undefined> =>
+    this.entityRegistry.get(await this.getConnection());
 
-    this.hassEntityRegistry = new Promise<HassEntityRegistry>(
-      // eslint-disable-next-line no-async-promise-executor
-      async (resolve, reject) => {
-        if (!this.connection) {
-          return reject();
-        }
-        this.connection
-          ?.sendMessagePromise<HassEntityRegistryEntry[]>({
-            type: "config/entity_registry/list",
-          })
-          .then((entityEntries) => {
-            console.log(`Got ${entityEntries.length} entity registry entries from Home Assistant`);
-            const repacked_entities: HassEntityRegistry = {};
-            entityEntries.forEach((entry) => {
-              repacked_entities[entry.entity_id] = entry;
-            });
-            return resolve(repacked_entities);
-          });
-      },
-    );
-    return this.hassEntityRegistry;
-  };
-
-  public async getHassEntityRegistry(): Promise<HassEntityRegistry> {
+  public async getHassEntityRegistry(): Promise<HassEntityRegistry | undefined> {
     return this.getHassEntityRegistryInternal();
   }
 
-  private getHassLabels = async (): Promise<HassLabels> => {
-    if (this.hassLabels !== undefined) {
-      return this.hassLabels;
-    }
-
-    await this.createConnection();
-
-    this.hassLabels = new Promise<HassLabels>(
-      // eslint-disable-next-line no-async-promise-executor
-      async (resolve, reject) => {
-        if (!this.connection) {
-          return reject();
-        }
-        this.connection
-          ?.sendMessagePromise<HassLabel[]>({
-            type: "config/label_registry/list",
-          })
-          .then((labels) => {
-            console.log(`Got ${labels.length} labels from Home Assistant`);
-            const repacked_labels: HassLabels = {};
-            labels.forEach((label) => {
-              repacked_labels[label.label_id] = label;
-            });
-            return resolve(repacked_labels);
-          });
-      },
-    );
-    return this.hassLabels;
-  };
+  private getHassLabels = async (): Promise<HassLabels | undefined> =>
+    this.labels.get(await this.getConnection());
 
   public async getLabelCompletions(): Promise<CompletionItem[]> {
     const labels = await this.getHassLabels();
@@ -861,14 +743,8 @@ export class HaConnection implements IHaConnection {
       return null;
     }
 
-    try {
-      const areaCompletions = await this.getAreaCompletions();
-      const area = areaCompletions.find(a => a.label === areaId);
-      return area?.detail || areaId;
-    } catch (error) {
-      console.log("Error getting area name:", error);
-      return areaId;
-    }
+    const areas = await this.getHassAreas();
+    return areas?.[areaId]?.name || areaId;
   }
 
   private async getFloorName(areaId: string | undefined): Promise<string | null> {
@@ -876,35 +752,15 @@ export class HaConnection implements IHaConnection {
       return null;
     }
 
-    try {
-      // First get the floor_id from the area
-      const areaCompletions = await this.getAreaCompletions();
-      const area = areaCompletions.find(a => a.label === areaId);
-      
-      if (!area?.documentation) {
-        return null;
-      }
-
-      // Extract floor info from area documentation
-      const docValue = typeof area.documentation === "string" 
-        ? area.documentation 
-        : area.documentation.value;
-        
-      const floorMatch = docValue.match(/Floor:\s*([^\r\n]+)/);
-      if (!floorMatch || floorMatch[1].trim() === "No floor assigned") {
-        return null;
-      }
-
-      const floorId = floorMatch[1].trim();
-      
-      // Get human-readable floor name
-      const floorCompletions = await this.getFloorCompletions();
-      const floor = floorCompletions.find(f => f.label === floorId);
-      return floor?.detail || floorId;
-    } catch (error) {
-      console.log("Error getting floor name:", error);
+    // Read floor_id from the area registry directly (this used to be parsed
+    // back out of the area completion's markdown documentation)
+    const areas = await this.getHassAreas();
+    const floorId = areas?.[areaId]?.floor_id;
+    if (!floorId) {
       return null;
     }
+    const floors = await this.getHassFloors();
+    return floors?.[floorId]?.name || floorId;
   }
 
   private async getDeviceForEntity(entityId: string): Promise<{ area_id: string | null; id: string } | null> {
@@ -915,7 +771,7 @@ export class HaConnection implements IHaConnection {
     try {
       // Get the entity registry entry to find device_id
       const entityRegistry = await this.getHassEntityRegistry();
-      const entityEntry = entityRegistry[entityId];
+      const entityEntry = entityRegistry?.[entityId];
       
       if (!entityEntry || !entityEntry.device_id) {
         return null;
@@ -923,7 +779,7 @@ export class HaConnection implements IHaConnection {
 
       // Get the device information
       const devices = await this.getHassDevices();
-      const device = devices[entityEntry.device_id];
+      const device = devices?.[entityEntry.device_id];
       
       if (!device) {
         return null;
@@ -1188,7 +1044,9 @@ export class HaConnection implements IHaConnection {
         });
       },
     );
-    return this.hassServices;
+    return this.forgetIfFailed(this.hassServices, "services", () => this.hassServices, () => {
+      this.hassServices = undefined;
+    });
   };
 
   public async getServiceCompletions(): Promise<CompletionItem[]> {
@@ -1254,6 +1112,10 @@ export class HaConnection implements IHaConnection {
     // Clear caches to release memory immediately on disconnect
     this.currentEntitiesCache = undefined;
     this.currentServicesCache = undefined;
+    for (const registry of this.registries) {
+      registry.detach();
+      registry.invalidate();
+    }
 
     this.connection.close();
     this.connection = undefined;

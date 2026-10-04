@@ -118,47 +118,54 @@ export class HomeAssistantConfiguration {
   };
 
   private getRootFiles = async (): Promise<string[]> => {
-    // Root discovery only needs a few files and folders, so skip trees that
-    // never hold HA YAML config: custom_components alone can be 20k+ files,
-    // which takes minutes to walk on a network mount (SSHFS/SMB) and holds
-    // up schema + custom-tag setup. !include / !include_dir_* are unaffected.
-    const filesInRoot = await this.fileAccessor.getFilesInFolder(
-      "",
-      HomeAssistantConfiguration.rootDiscoveryIgnoredDirs,
-    );
+    // Root discovery only needs a few files and folders. On a network mount
+    // (SSHFS/SMB) every directory entry costs a round-trip, so avoid walking
+    // the whole workspace: list the top level once, then only the folders HA
+    // config can live in. Trees that never hold HA YAML (custom_components can
+    // be 20k+ files) are skipped even in the fallback walk.
+    // !include / !include_dir_* resolution is unaffected.
+    const ignoreDirs = HomeAssistantConfiguration.rootDiscoveryIgnoredDirs;
     const ourFiles = [
       "configuration.yaml",
       "ui-lovelace.yaml",
       "automations.yaml",
     ];
     const ourFolders = [
-      path.join("blueprints", "automation") + path.sep,
-      path.join("blueprints", "script") + path.sep,
-      path.join("blueprints", "template") + path.sep,
-      "automations" + path.sep,
-      "custom_sentences" + path.sep,
+      path.join("blueprints", "automation"),
+      path.join("blueprints", "script"),
+      path.join("blueprints", "template"),
+      "automations",
+      "custom_sentences",
     ];
 
-    const rootFiles = ourFiles.filter((f) => filesInRoot.some((y) => y === f));
-    const subfolderFiles = filesInRoot.filter((f) =>
-      ourFolders.some((y) => f.startsWith(y)),
-    );
-    const files = [...rootFiles, ...subfolderFiles];
-
-    if (files.length === 0) {
-      const areOurFilesSomehwere = filesInRoot.filter((f) =>
-        ourFiles.some((ourFile) => f.endsWith(ourFile)),
-      );
-      if (areOurFilesSomehwere.length > 0) {
-        this.subFolder = areOurFilesSomehwere[0].substr(
-          0,
-          areOurFilesSomehwere[0].lastIndexOf(path.sep),
+    // Usual layout: the workspace is the HA config folder
+    const topLevel = await this.fileAccessor.getFilesInFolder("", ignoreDirs, 0);
+    const rootFiles = topLevel.filter((f) => ourFiles.includes(path.basename(f)));
+    if (rootFiles.length > 0) {
+      this.subFolder = path.dirname(rootFiles[0]);
+      const folderFiles: string[] = [];
+      for (const folder of ourFolders) {
+        const files = await this.fileAccessor.getFilesInFolder(
+          path.join(this.subFolder, folder),
+          ignoreDirs,
         );
-        return areOurFilesSomehwere;
+        folderFiles.push(...files.filter((f) => /\.ya?ml$/i.test(f)));
       }
+      return [...rootFiles, ...folderFiles];
     }
 
-    return files.map((x) => path.join(this.subFolder, x));
+    // Fallback: the HA config lives in a subfolder of the workspace
+    const allFiles = await this.fileAccessor.getFilesInFolder("", ignoreDirs);
+    const areOurFilesSomewhere = allFiles.filter((f) =>
+      ourFiles.some((ourFile) => f.endsWith(ourFile)),
+    );
+    if (areOurFilesSomewhere.length > 0) {
+      this.subFolder = areOurFilesSomewhere[0].substr(
+        0,
+        areOurFilesSomewhere[0].lastIndexOf(path.sep),
+      );
+    }
+    return areOurFilesSomewhere;
   };
 
   public discoverFiles = async (): Promise<void> => {

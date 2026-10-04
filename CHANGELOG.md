@@ -6,6 +6,22 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.1.18] - 2026-10-04
+
+### Fixed
+
+- Areas, devices, floors, labels and the entity registry now refresh when they change in Home Assistant (via `*_registry_updated` events), and open files are re-validated. Previously they were cached for the whole session, so re-added devices showed stale "does not exist" warnings until VS Code was restarted.
+- A failed or unanswered registry request no longer stalls validation for the rest of the session: requests time out, failures are not cached, and the next call retries. The same applies to the initial entity and service load.
+- One Home Assistant connection at startup instead of up to four: parallel callers share a single connection attempt, and configuration notifications that arrive mid-connect no longer force reconnects.
+- Blueprint files under `blueprints/` are discovered again and get blueprint schema validation (root discovery had only been working through its fallback path).
+
+### Changed
+
+- Startup discovery lists the config root once and walks only the folders HA config can live in, using directory-entry types instead of a stat per file: 6.2 s → 0.45 s on a network-mounted config.
+- Registry fetching is consolidated into a shared `RegistryCache`; area/floor names for entity hovers are read from the registries instead of parsed back out of completion text.
+- `npm run test:unit` runs the VS Code-independent suites with plain mocha in about a second.
+- Removed stray logs, the unused `.eslintrc.js`, `vsc-extension-quickstart.md` and the legacy `test:old` runner.
+
 ## [1.1.17] - 2026-10-04
 
 ### Fixed

@@ -6,7 +6,7 @@ import * as vscodeUri from "vscode-uri";
 
 export interface FileAccessor {
   getFileContents(fileName: string): Promise<string>;
-  getFilesInFolder(subFolder: string, ignoreDirs?: string[]): Promise<string[]>;
+  getFilesInFolder(subFolder: string, ignoreDirs?: string[], maxDepth?: number): Promise<string[]>;
   getFilesInFolderRelativeFrom(
     subFolder: string,
     relativeFrom: string,
@@ -55,8 +55,9 @@ export class VsCodeFileAccessor implements FileAccessor {
   public async getFilesInFolder(
     subFolder: string,
     ignoreDirs: string[] = [],
+    maxDepth = Infinity,
   ): Promise<string[]> {
-    return this.walkFolder(subFolder, [], new Set<string>(), new Set(ignoreDirs));
+    return this.walkFolder(subFolder, [], new Set<string>(), new Set(ignoreDirs), maxDepth);
   }
 
   private async walkFolder(
@@ -64,6 +65,7 @@ export class VsCodeFileAccessor implements FileAccessor {
     filelist: string[],
     visitedDirs: Set<string>,
     ignoreDirs: Set<string>,
+    depthLeft: number,
   ): Promise<string[]> {
     // Resolve subfolder relative to workspace path
     const resolvedSubFolder = path.isAbsolute(subFolder)
@@ -91,8 +93,11 @@ export class VsCodeFileAccessor implements FileAccessor {
     visitedDirs.add(realPath);
 
     try {
-      const files = await fs.readdir(normalizedSubFolder);
-      for (const file of files) {
+      // withFileTypes gives the entry type from the directory listing itself,
+      // avoiding one lstat round-trip per entry on network mounts
+      const entries = await fs.readdir(normalizedSubFolder, { withFileTypes: true });
+      for (const entry of entries) {
+        const file = entry.name;
         // ignore dot files, and caller-excluded folders (checked by name before
         // any stat, so large trees cost nothing on slow mounts like SSHFS)
         if (file.charAt(0) === "." || ignoreDirs.has(file)) {
@@ -100,22 +105,15 @@ export class VsCodeFileAccessor implements FileAccessor {
         }
         const filePath = path.join(normalizedSubFolder, file);
 
-        // Use lstat to not follow symlinks automatically
-        let stat;
-        try {
-          stat = await fs.lstat(filePath);
-        } catch {
-          // Skip files we can't stat
-          continue;
-        }
-
-        if (stat.isSymbolicLink()) {
+        if (entry.isSymbolicLink()) {
           // For symlinks, check if they point to a directory
           try {
             const targetStat = await fs.stat(filePath);
             if (targetStat.isDirectory()) {
-              // Recursively scan, but with visited directory tracking
-              filelist = await this.walkFolder(filePath, filelist, visitedDirs, ignoreDirs);
+              if (depthLeft > 0) {
+                // Recursively scan, but with visited directory tracking
+                filelist = await this.walkFolder(filePath, filelist, visitedDirs, ignoreDirs, depthLeft - 1);
+              }
             } else {
               // It's a file symlink, add it to the list
               filelist = filelist.concat(filePath);
@@ -124,9 +122,11 @@ export class VsCodeFileAccessor implements FileAccessor {
             // Broken symlink or permission issue, skip it
             console.log(`Skipping broken or inaccessible symlink: ${filePath}`);
           }
-        } else if (stat.isDirectory() && !file.startsWith(".")) {
-          filelist = await this.walkFolder(filePath, filelist, visitedDirs, ignoreDirs);
-        } else if (stat.isFile()) {
+        } else if (entry.isDirectory()) {
+          if (depthLeft > 0) {
+            filelist = await this.walkFolder(filePath, filelist, visitedDirs, ignoreDirs, depthLeft - 1);
+          }
+        } else if (entry.isFile()) {
           filelist = filelist.concat(filePath);
         }
       }

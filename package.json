@@ -2,7 +2,7 @@
   "name": "home-assistant-vscode",
   "displayName": "Home Assistant Config Helper",
   "description": "Home Assistant Configuration Helper",
-  "version": "1.1.17",
+  "version": "1.1.18",
   "preview": false,
   "engines": {
     "vscode": "^1.99.0"
@@ -811,7 +811,7 @@
     "lint": "npm run lint:eslint && npm run lint:prettier && npm run lint:types",
     "schema": "ts-node src/language-service/src/schemas/generateSchemas.ts",
     "test": "npm run compile && vscode-test",
-    "test:old": "npm run compile && node ./out/test/runTest.js",
+    "test:unit": "tsc -p ./ && mocha --ui tdd \"out/test/unit/**/*.test.js\" \"out/test/suite/*-validation-mock.test.js\" out/test/suite/workspace-detection.test.js",
     "watch": "node scripts/bundle.js --watch",
     "prepare": "husky",
     "vscode:prepublish": "node scripts/bundle.js"

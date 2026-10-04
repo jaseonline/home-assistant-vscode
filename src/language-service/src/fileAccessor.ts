@@ -1,7 +1,10 @@
 export interface FileAccessor {
   getFileContents(fileName: string): Promise<string>;
-  /** Recursively list files; directories named in `ignoreDirs` are not descended into. */
-  getFilesInFolder(subFolder: string, ignoreDirs?: string[]): Promise<string[]>;
+  /**
+   * Recursively list files (absolute paths). Directories named in `ignoreDirs`
+   * are not descended into; `maxDepth` 0 lists only the folder itself.
+   */
+  getFilesInFolder(subFolder: string, ignoreDirs?: string[], maxDepth?: number): Promise<string[]>;
   getFilesInFolderRelativeFrom(
     subFolder: string,
     relativeFrom: string,
