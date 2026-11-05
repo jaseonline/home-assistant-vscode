@@ -17,7 +17,7 @@ Please **don't** open a public issue. Report it privately through GitHub's priva
 2. Click **Report a vulnerability** ([direct link](https://github.com/JaseOnline/home-assistant-vscode/security/advisories/new)).
 3. Include the affected version, steps to reproduce, and the impact you see.
 
-This is maintained in spare time, so responses are best effort. I aim to acknowledge a report within 7 days and to keep you updated in the advisory thread until it's fixed or declined. Accepted issues are fixed in a new release and disclosed through a GitHub security advisory, with credit if you'd like it.
+This is maintained in spare time, so responses are best effort. I aim to acknowledge a report and to keep you updated in the advisory thread until it's fixed or declined. Accepted issues are fixed in a new release and disclosed through a GitHub security advisory, with credit if you'd like it.
 
 ## Scope
 
