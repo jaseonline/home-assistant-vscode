@@ -6,3 +6,5 @@ src/language-service/dist
 src/language-service/src/schemas/json/*.json
 # Build / tool logs
 *.log
+# Neumorphic HA design kit — local reference only
+assets/Neumorphic HA Design System/

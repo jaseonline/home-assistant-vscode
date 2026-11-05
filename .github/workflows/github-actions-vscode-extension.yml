@@ -2,48 +2,12 @@ name: VS Code Extension
 
 on: [push, pull_request]
 
+# Fork CI: build and test only. The upstream publish job (Marketplace + Open VSX) was removed —
+# releases are packaged locally with build.ps1. macOS was dropped: its test runner failed with
+# "spawn ... Electron ENOENT" on every master push.
 jobs:
   ci:
     name: Build & Test
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-    
-    steps:
-      - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v6
-      
-      - name: 🏗 Set up NodeJS
-        uses: actions/setup-node@v6.1.0
-        with:
-          node-version: "20"
-        
-
-      - name: 🏗 Install NodeJS packages
-        run: |
-          npm ci
-      - name: 🚀 Run Linter
-        run: npm run lint
-      
-      - name: 🚀 Build Schema
-        run: npm run schema
-
-      - name: 🚀 Run Compile
-        run: npm run compile
-      
-      - name: 🧪 Run tests (Linux)
-        if: runner.os == 'Linux'
-        run: xvfb-run -a npm test
-
-      - name: 🧪 Run tests (macOS)
-        if: runner.os == 'macOS'
-        run: npm test
-
-  publish:
-    name: Publish Extension
-    needs: ci
-    if: success() && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
 
     steps:
@@ -53,10 +17,10 @@ jobs:
       - name: 🏗 Set up NodeJS
         uses: actions/setup-node@v6.1.0
         with:
-          node-version: "20"
+          node-version-file: ".nvmrc"
 
       - name: 🏗 Install NodeJS packages
-        run: npm install
+        run: npm ci
 
       - name: 🚀 Run Linter
         run: npm run lint
@@ -67,17 +31,5 @@ jobs:
       - name: 🚀 Run Compile
         run: npm run compile
 
-      - name: 🚀 VSCode Marketplace Publish
-        run: |
-          npm install -g @vscode/vsce
-          vsce publish -p $VSCE_TOKEN
-          vsce package -o home-assistant-vscode.vsix
-        env:
-          VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
-
-      - name: 🚀 Open VSX Publish
-        uses: HaaLeo/publish-vscode-extension@v2
-        with:
-          pat: ${{ secrets.OPEN_VSX_TOKEN }}
-          extensionFile: home-assistant-vscode.vsix
-          registryUrl: https://open-vsx.org
+      - name: 🧪 Run tests
+        run: xvfb-run -a npm test

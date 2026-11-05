@@ -14,7 +14,21 @@
     {
         "type": "npm",
         "script": "watch",
-        "problemMatcher": "$tsc-watch",
+        // esbuild watch (scripts/bundle.js --watch) never prints tsc's "Watching for file changes",
+        // so $tsc-watch left the F5 preLaunchTask waiting forever. Match esbuild's own output instead.
+        "problemMatcher": {
+            "owner": "esbuild",
+            "fileLocation": ["relative", "${workspaceFolder}"],
+            "pattern": [
+                { "regexp": "^✘ \\[ERROR\\] (.+)$", "message": 1 },
+                { "regexp": "^\\s+(.+):(\\d+):(\\d+):\\s*$", "file": 1, "line": 2, "column": 3 }
+            ],
+            "background": {
+                "activeBegins": true,
+                "beginsPattern": "^\\s*watching for changes",
+                "endsPattern": "^\\s*watching for changes"
+            }
+        },
         "isBackground": true,
         "presentation": {
             "reveal": "never"

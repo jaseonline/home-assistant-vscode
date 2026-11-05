@@ -791,16 +791,6 @@
       ]
     }
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.ts": [
-      "eslint --fix"
-    ]
-  },
   "scripts": {
     "build:theme": "node scripts/build-theme.js",
     "bundle": "node scripts/bundle.js",
@@ -839,7 +829,6 @@
     "eslint-config-prettier": "^10.1.8",
     "glob": "^13.0.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.2.7",
     "mocha": "^11.7.5",
     "prettier": "^3.7.3",
     "rimraf": "6.1.2",

@@ -41,3 +41,5 @@ selfIdentity.plist
 color-audit.md
 # Claude session memory — never package
 .remember/**
+# Neumorphic HA design kit — local reference, not part of the extension
+assets/Neumorphic HA Design System/**

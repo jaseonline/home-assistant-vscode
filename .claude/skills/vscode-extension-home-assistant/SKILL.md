@@ -15,9 +15,10 @@ description: >
 
 ## Identity
 
-- **Repo:** `github.com/JaseOnline/home-assistant-vscode` — personal fork of `keesschollaart81/home-assistant-vscode`
+- **Repo:** `github.com/JaseOnline/home-assistant-vscode` — personal fork of `keesschollaart81/vscode-home-assistant` (remote `upstream`)
 - **Local path:** `D:\Projects\active\home-assistant-vscode`
-- **Publisher:** `JaseOnline`  |  **Version:** `1.1.14`  |  **VS Code engine:** `^1.99.0`
+- **Repo-wide build, test, release and architecture notes live in the project `CLAUDE.md`** — this skill covers the theme, grammars and schema history.
+- **Publisher:** `JaseOnline`  |  **Version:** see root `version` file (1.1.20 at 2026-11-05)  |  **VS Code engine:** `^1.99.0`
 - **Language ID:** `home-assistant` (`.yaml`, `.yml`)  |  `home-assistant-jinja` (`.jinja`)
 
 Fork-specific additions vs upstream:
@@ -40,6 +41,7 @@ Fork-specific additions vs upstream:
 
 | Part file | Key in output | Contents |
 |---|---|---|
+| `src/parts/palette.json` | — (resolved at build) | Named colours; parts reference them as `$name` / `$name@AA` (alpha). Unknown token fails the build |
 | `src/parts/meta.json` | top-level | `name`, `type`, `semanticHighlighting` |
 | `src/parts/workbench.json` | `colors` | All VS Code UI / workbench colours |
 | `src/parts/tokens-ha.json` | `tokenColors` (first, HA rules) | HA-specific TextMate token rules (25 rules) |
@@ -183,7 +185,7 @@ npm test
 **Important build gotchas:**
 - `npm install --ignore-scripts` on Windows — avoids `EINVAL` on `utf-8-validate`/`bufferutil` native bindings.
 - `generateSchemas.ts` **must** run via `ts-node`, not the compiled JS — it uses `__dirname` to find `.ts` source files.
-- The `compile` script runs: `build-theme.js` → `tsc` language-service → `generateSchemas.ts --quick` → `node scripts/bundle.js`.
+- The `compile` script runs: `build-theme.js` → `generateSchemas.ts --quick` → `tsc` language-service → `tsc` root → `node scripts/bundle.js`.
 - Bundler is esbuild (via `scripts/bundle.js`), not webpack.
 
 **Package:** use `build.ps1` at the repo root. It compiles, runs `vsce package --no-dependencies` (out/ is already an esbuild bundle), names the file from package.json, and fails if `.remember/` or `.claude/` leak into the package.
@@ -197,31 +199,7 @@ npm test
 
 ## Extension Architecture
 
-### Two-Process Model
-
-- **Extension host** (`src/extension.ts` → `out/extension.js`): VS Code process. Auth, status bar, commands, spawns language server.
-- **Language server** (`src/server/server.ts` → `out/server/server.js`): Separate Node process. All YAML intelligence — completions, validation, hover, go-to-definition.
-
-Communication: `vscode-languageclient` IPC + custom LSP requests/notifications (callService, checkConfig, getErrorLog, renderTemplate in each direction).
-
-### Credential Flow (3-layer fallback)
-
-1. VS Code SecretStorage (`home-assistant.token`, `home-assistant.url`)
-2. Env vars (`HASS_TOKEN` / `SUPERVISOR_TOKEN`, `HASS_SERVER`)
-3. Legacy `settings.json` keys (auto-migrated to SecretStorage on first use)
-
-### HA Workspace Detection
-
-`isHomeAssistantWorkspace()` looks for: `configuration.yaml`, `.storage/`, `home-assistant_v2.db`, `home-assistant.log`, `.HA_VERSION`, `automations.yaml`, `scripts.yaml`, `scenes.yaml`, `ui-lovelace.yaml`. Guards automatic YAML file-association to prevent hijacking non-HA projects.
-
----
-
-## Known False Positives (Do Not Fix)
-
-- **Label validator** flags `Reload`, `Lighting`, `Music` as unknown — these are valid HA labels in Jason's instance.
-- **Area validator** flags `ssid`, `pwd`, `qr` — valid area names in Jason's HA config.
-
-Do not suppress these by altering schema types.
+See the project `CLAUDE.md` (two-process model, credential flow, AuthMiddleware, language service, workspace detection).
 
 ---
 
@@ -270,4 +248,4 @@ Do not suppress these by altering schema types.
 | `src/grammars/js-block.tmLanguage.json` | Button-Card JS block injection |
 | `syntaxes/external/YAML.tmLanguage` | Base YAML grammar |
 | `src/language-service/src/schemas/` | TypeScript schema source files |
-| `src/language-service/dist/schemas/json/` | Generated JSON schemas (runtime) |
+| `src/language-service/src/schemas/json/` | Generated JSON schemas (git-ignored); copied to `dist/` then `out/server/json/`, which is the runtime copy |
