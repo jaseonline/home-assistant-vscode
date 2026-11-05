@@ -88,5 +88,9 @@ Self-contained sub-package with its own `package.json` and `tsconfig.json` (`out
 
 ## Pending Work (Fork Tracks)
 
-- **Track 3** — Evaluate `jaseonline/home-assistant-json-schema` for automated schema generation to replace hand-written `.ts` files in `src/language-service/src/schemas/integrations/core/`. High effort; separate sub-project. Local path TBC (old `C:\Dev\projects\personal\...` path no longer exists).
+- **Track 3** — Schema gaps (hand-edit the TS types, then `npm run schema`; history in the `ha-vscode-extension` skill):
+  - 6 missing selectors in `selectors.ts`: `app`, `serial_port`, `statistic`, `numeric_threshold`, `choose`, `automation_behavior`
+  - Template `LightItem` missing `color_temp_kelvin`, `min_color_temp_kelvin`, `max_color_temp_kelvin`
+  - Legacy syntax on one trigger cascades into misleading "closest branch" errors (yaml-language-server `anyOf` reporting)
+  - `hass-json-schema` / `jaseonline/home-assistant-json-schema` (archived) is downstream output of this repo's generator — not a source of schemas or fixes.
 - **Track 4** — Lovelace dashboard editing of storage-mode dashboards via WebSocket (`lovelace/dashboards/list` / `lovelace/config` / `lovelace/config/save`), surfaced through a `ha-dashboard:` FileSystemProvider + QuickPick command. Scope: `docs/TRACK4-dashboard-editing.md`. Concept from `myakove/homeassistant-lsp`; reimplement against `haConnection.ts`, do not vendor.
