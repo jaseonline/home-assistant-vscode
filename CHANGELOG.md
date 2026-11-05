@@ -6,6 +6,23 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.1.21] - 2026-11-05
+
+### Changed
+
+- README rewritten for the fork: install from a built `.vsix`, connect via **Manage Home Assistant Authentication** (SecretStorage), fork features, settings table, and the HA Neon Dark palette generated from `src/parts/palette.json`. Fixes the broken render-templates image, the upstream Marketplace link and dead wiki links.
+- Added `SECURITY.md`: report vulnerabilities through GitHub private vulnerability reporting.
+- CI builds and tests on Ubuntu only. The inherited Marketplace/Open VSX publish job and the failing macOS leg were removed, and Node comes from `.nvmrc`.
+- Default branch renamed from `master` to `main`.
+
+### Fixed
+
+- The F5 debug launch hung waiting for its `npm: watch` pre-launch task: the task used tsc's `$tsc-watch` matcher, which never matches esbuild's watch output. It now uses an esbuild matcher.
+
+### Removed
+
+- Dead husky v4 / lint-staged configuration and the unused `lint-staged` dependency.
+
 ## [1.1.20] - 2026-10-04
 
 ### Fixed
