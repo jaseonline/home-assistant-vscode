@@ -49,6 +49,7 @@ Scripts in `scripts/*.js` are not linted. No `.prettierrc` (defaults). `.gitattr
 - Use the `release-extension` skill (`.claude/skills/vscode-release-extension/`). Bump `package.json` (`npm version x.y.z --no-git-tag-version --ignore-scripts`) **and** the root `version` file; add `## [x.y.z] - YYYY-MM-DD` to CHANGELOG (Keep a Changelog).
 - `.\build.ps1 [-Install] [-SkipCompile]` packages the .vsix via vsce and checks that no `.claude/` / `.remember/` files leaked in. Anything not in `.vscodeignore` ships.
 - Release commit messages end with `(x.y.z)`. Push to `main` (default branch since 2026-11-05).
+- Then push a `fork-v<x.y.z>` tag: `.github/workflows/release.yml` builds, tests and publishes a GitHub Release with the .vsix and the CHANGELOG section as notes. Never use plain `v*` tags — the fork inherited upstream's `v1.1.1`…`v2.2.0`, which collide with this fork's version numbers.
 - CI (`.github/workflows/github-actions-vscode-extension.yml`) is build + test on Ubuntu only — it does not publish. Releases are local `.vsix` builds.
 
 ## Architecture

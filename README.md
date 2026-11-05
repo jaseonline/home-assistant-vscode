@@ -8,7 +8,7 @@ The fork isn't published to the VS Code Marketplace. The Marketplace extension `
 
 # Getting started
 
-1. **Install** a `.vsix` built from this repo (see [Build from source](#build-from-source)):
+1. **Install** the `.vsix` from the [latest release](https://github.com/JaseOnline/home-assistant-vscode/releases/latest), or build it yourself (see [Build from source](#build-from-source)):
 
    ```powershell
    code --install-extension home-assistant-vscode-<version>.vsix

@@ -1,0 +1,89 @@
+name: Release
+
+# Push a tag like fork-v1.1.21 to build, test and publish a GitHub Release with the .vsix attached.
+# The fork-v prefix avoids the upstream v1.x/v2.x tags inherited by this fork (v1.1.1 ... v2.2.0).
+on:
+  push:
+    tags:
+      - "fork-v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build & publish release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@v6
+
+      - name: 🏗 Set up NodeJS
+        uses: actions/setup-node@v6.1.0
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: 🔎 Check tag matches package.json
+        id: version
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          tag_version="${GITHUB_REF_NAME#fork-v}"
+          if [ "$version" != "$tag_version" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $version"
+            exit 1
+          fi
+          if [ "$(tr -d '[:space:]' < version)" != "$version" ]; then
+            echo "::error::version file does not match package.json version $version"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: 🏗 Install NodeJS packages
+        run: npm ci
+
+      - name: 🚀 Run Linter
+        run: npm run lint
+
+      - name: 🚀 Build Schema
+        run: npm run schema
+
+      - name: 🚀 Run Compile
+        run: npm run compile
+
+      - name: 🧪 Run tests
+        run: xvfb-run -a npm test
+
+      - name: 📦 Package .vsix
+        id: package
+        run: |
+          vsix="home-assistant-vscode-${{ steps.version.outputs.version }}.vsix"
+          npx --yes @vscode/vsce@4.1.0 package --no-dependencies -o "$vsix"
+          # Same guard as build.ps1: session-memory and Claude files must never ship
+          if npx --yes @vscode/vsce@4.1.0 ls --no-dependencies | grep -E '^\.(remember|claude)/'; then
+            echo "::error::Package contains private files - update .vscodeignore"
+            exit 1
+          fi
+          echo "vsix=$vsix" >> "$GITHUB_OUTPUT"
+
+      - name: 📝 Extract release notes from CHANGELOG
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          awk -v ver="$version" '
+            index($0, "## [" ver "]") == 1 { found = 1; next }
+            found && /^## \[/ { exit }
+            found { print }
+          ' CHANGELOG.md > release-notes.md
+          if [ ! -s release-notes.md ]; then
+            echo "::error::No CHANGELOG.md entry for [$version]"
+            exit 1
+          fi
+
+      - name: 🚀 Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "${{ steps.package.outputs.vsix }}" \
+            --title "${{ steps.version.outputs.version }}" \
+            --notes-file release-notes.md \
+            --verify-tag
