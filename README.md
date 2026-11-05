@@ -1,4 +1,4 @@
-![banner-dark](./assets/banner-dark.png)
+<img src="https://socialify.dev/jaseonline/home-assistant-vscode/image?description=1&font=Source+Code+Pro&forks=1&issues=1&language=1&logo=https%3A%2F%2Fmatilda.network%2Fimages%2Ficons%2Fhome-assistant-icon.svg&name=1&owner=1&pattern=Solid&pulls=1&stargazers=1&theme=Dark" alt="home-assistant-vscode" width="640" height="320" />
 # Features
 
 ## Completion for Entity IDs, Actions, Scenes and Triggers
