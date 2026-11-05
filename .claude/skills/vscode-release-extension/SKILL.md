@@ -3,7 +3,7 @@ name: release-extension
 description: Release your home-assistant-vscode extension
 ---
 
-Repo: jaseonline/home-assistant-vscode (default branch: `master`)
+Repo: jaseonline/home-assistant-vscode (default branch: `main`)
 Local: D:\Projects\active\home-assistant-vscode
 
 Release steps:
@@ -11,6 +11,6 @@ Release steps:
 2. Add a `## [x.y.z] - YYYY-MM-DD` entry to CHANGELOG.md under `## [Unreleased]`.
 3. Build and verify with `.\build.ps1 -Install` (compile → `vsce package --no-dependencies` → private-file leak check → install). If packaging fails, diagnose and fix it; check `.vscodeignore` if the file count jumps.
 4. Developer: Reload Window and confirm `code --list-extensions --show-versions` shows the new version.
-5. Commit, push, and merge to `master`.
+5. Commit, push, and merge to `main`.
 
 Verify the build before reporting success.
