@@ -9,7 +9,8 @@ import { FileAccessor } from "../../language-service/src/fileAccessor";
 class ErrorSimulatingFileAccessor implements FileAccessor {
   private shouldFailOnFile: string | null = null;
   private delayMs = 0;
-  
+  delayedReads = 0;
+
   // Remove empty constructor since it's not needed
   
   setFailureForFile(fileName: string | null) {
@@ -23,6 +24,7 @@ class ErrorSimulatingFileAccessor implements FileAccessor {
   async getFileContents(fileName: string): Promise<string> {
     if (this.delayMs > 0) {
       await new Promise(resolve => setTimeout(resolve, this.delayMs));
+      this.delayedReads++;
     }
     
     if (this.shouldFailOnFile && fileName.includes(this.shouldFailOnFile)) {
@@ -206,20 +208,18 @@ script:
     const testFilePath = await createTestFile(validContent);
     const fileAccessor = new ErrorSimulatingFileAccessor();
     
-    // Simulate a slow file access (1.5 seconds)
-    fileAccessor.setDelay(1500);
-    
+    // Simulate a slow file access
+    fileAccessor.setDelay(200);
+
     // Try to parse with simulated delay
     const yamlFile = new HomeAssistantYamlFile(fileAccessor, testFilePath, "configuration.yaml");
-    
+
     // Should still return the scripts despite the delay
-    const startTime = process.hrtime.bigint();
     const scripts = await yamlFile.getScripts();
-    const endTime = process.hrtime.bigint();
-    const duration = Number(endTime - startTime) / 1_000_000; // Convert to milliseconds
-    
-    // Verify it waited for the file
-    assert.ok(duration >= 1500, "Should have waited for delayed file access");
+
+    // Count completed delayed reads rather than timing them: Node timers can fire
+    // slightly early against hrtime on a loaded CI runner, which made a >= 1500 ms check flaky.
+    assert.strictEqual(fileAccessor.delayedReads, 1, "Should have waited for the delayed file read");
     assert.ok(Object.keys(scripts).includes("test_script"), "Should still parse scripts from delayed file");
   });
   
