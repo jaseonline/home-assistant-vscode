@@ -2,6 +2,12 @@ name: Language Sevice
 
 on:
   push:
+    # Release tags are built and tested by release.yml (path filters are not applied to tag pushes).
+    # branches must be listed too: a push filter with only tags-ignore stops branch pushes triggering it.
+    branches:
+      - "**"
+    tags-ignore:
+      - "fork-v*"
     paths:
       - "src/language-service/*"
       - ".github/*"

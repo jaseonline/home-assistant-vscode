@@ -1,9 +1,17 @@
 name: VS Code Extension
 
-on: [push, pull_request]
+on:
+  push:
+    # Release tags are built and tested by release.yml. branches must be listed too:
+    # a push filter with only tags-ignore stops branch pushes triggering the workflow.
+    branches:
+      - "**"
+    tags-ignore:
+      - "fork-v*"
+  pull_request:
 
 # Fork CI: build and test only. The upstream publish job (Marketplace + Open VSX) was removed —
-# releases are packaged locally with build.ps1. macOS was dropped: its test runner failed with
+# releases are published by release.yml on fork-v* tags. macOS was dropped: its test runner failed with
 # "spawn ... Electron ENOENT" on every master push.
 jobs:
   ci:
