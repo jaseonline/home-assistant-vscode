@@ -6,6 +6,17 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.1.22] - 2026-11-06
+
+### Security
+
+- Dependencies updated with `npm audit fix` in both packages: no known vulnerabilities remain in anything that ships. This includes axios 1.21.0, which is bundled into the language server for Home Assistant REST calls, plus follow-redirects, form-data, fast-uri, ajv, yaml, lodash, brace-expansion and uuid. The remaining advisories are in dev-only test tooling (mocha, `@vscode/test-cli`, c8).
+
+### Changed
+
+- Releases are published by pushing a `fork-v<x.y.z>` tag: the `Release` workflow builds, tests and creates a GitHub Release with the `.vsix` and this changelog's section as notes. The build and language-service workflows skip those tags rather than running the same build again.
+- `rimraf` 6.1.4; removed the redundant `.prettierignore`.
+
 ## [1.1.21] - 2026-11-05
 
 ### Changed
